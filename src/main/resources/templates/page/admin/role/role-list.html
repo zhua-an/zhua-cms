@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="common/head :: head_Content"/>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="roleName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色代码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="roleCode" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="tableToolbar">
+            <div class="layui-btn-container">
+                <shiro:hasPermission name="sys_role_add">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+                </shiro:hasPermission>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="tableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <shiro:hasPermission name="sys_role_edit">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            </shiro:hasPermission>
+            <shiro:hasPermission name="sys_role_del">
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+            </shiro:hasPermission>
+        </script>
+
+    </div>
+</div>
+<script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: '/sysRole/page',
+            toolbar: '#tableToolbar',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [
+                [
+                    {type: 'numbers', width: 50},
+                    {type: "checkbox", width: 50},
+                    {field: 'roleName', title: '角色名称'},
+                    {field: 'roleCode', title: '角色代码', sort: true},
+                    {field: 'roleDesc', title: '角色描述'},
+                    {field: 'delFlag', title: '删除标识', width: 120, templet: delFlagTemplet},
+                    {field: 'createTime', width: 180, title: '创建时间', sort: true},
+                    {field: 'updateTime', width: 180, title: '更新时间', sort: true},
+                    {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+                ]
+            ],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line',
+            height: 'full-200'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var param = data.field
+            // var result = JSON.stringify(data.field);
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: param
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(tableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['800px', '600px'],
+                    content: '/sysRole/info',
+                });
+                // $(window).on("resize", function () {
+                //     layer.full(index);
+                // });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                if(data.length == 0) {
+                    layer.msg('请选择要删除的数据', {icon: 7});
+                    return;
+                }
+
+                var idArr = [];
+                for(var i = 0; i < data.length; i++) {
+                    idArr.push(data.id);
+                }
+                $.ajax({
+                    type : "POST",
+                    url : "/sysRole/delete",
+                    data: idArr.join(","),
+                    error : function(request) {
+                        layer.msg('系统错误', {icon: 7});
+                    },
+                    success : function(res) {
+                        if(res.code==200){
+                            layer.msg(res.msg, {icon: 1}, function () {
+                                //查询
+                                $("button[lay-filter='data-search-btn']").click();
+                            });
+                        }else{
+                            layer.msg(res.msg, {icon: 7});
+                        }
+                    }
+                });
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(tableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(tableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+                var index = layer.open({
+                    title: '编辑',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['800px', '600px'],
+                    content: '/sysRole/info?id='+data.id,
+                });
+                // $(window).on("resize", function () {
+                //     layer.full(index);
+                // });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除行么', function (index) {
+                    if(index) {
+                        $.ajax({
+                            type : "POST",
+                            url : "/sysRole/delete/"+ data.id,
+                            error : function(request) {
+                                layer.msg('系统错误', {icon: 7});
+                            },
+                            success : function(res) {
+                                if(res.code==200){
+                                    layer.msg(res.msg, {icon: 1}, function () {
+                                        //查询
+                                        $("button[lay-filter='data-search-btn']").click();
+                                    });
+                                }else{
+                                    layer.msg(res.msg, {icon: 7});
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    }
+                });
+            }
+        });
+
+    });
+
+    function delFlagTemplet(d) {
+        if(d.delFlag == '1') {
+            return '<button type="button" class="layui-btn layui-btn-sm layui-btn-danger">已删除</button>';
+        }else {
+            return '未删除';
+        }
+    }
+</script>
+</body>
+</html>

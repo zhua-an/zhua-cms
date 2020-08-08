@@ -1,0 +1,130 @@
+
+server:
+  port: 8060
+  tomcat:
+    uri-encoding: utf-8
+    max-connections: 10000
+    threads:
+      #最大220个并发，可以达到不丢包，默认为200
+      max: 200
+      min-spare: 10
+
+# 定位模板的目录
+spring:
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/template?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    #连接池的配置信息
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      ## 配置获取连接等待超时的时间
+      max-wait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filter: stat,wall,log4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connect-properties:
+        - druid.stat.mergeSql: true
+        - druid.stat.slowSqlMillis: 5000
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 10
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: HikariCP
+      max-lifetime: 30000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  mvc:
+    view:
+      prefix: classpath:/templates/
+      suffix: .html # 给返回的页面添加后缀名
+  resources:
+    static-locations: classpath:/static/**
+  #thymeleaf模板配置
+  thymeleaf:
+    #禁用缓存 默认false
+    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+    #严格执行H5标准
+#    mode: LEGACYHTML5
+    mode: HTML5
+    #指定编码
+    encoding: UTF-8
+    #禁用缓存 默认false
+    servlet:
+      content-type: text/html
+
+# mybaits-plus配置
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  global-config:
+    banner: false
+    db-config:
+      # 主键类型 0:数据库ID自增 1.未定义 2.用户输入 3 id_worker 4.uuid 5.id_worker字符串表示
+      id-type: auto
+      #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+      field-strategy: not_null
+      table-underline: true
+      # 逻辑删除全局值（1表示已删除，这也是Mybatis Plus的默认配置）
+      logic-delete-value: 1
+      # 逻辑未删除全局值（0表示未删除，这也是Mybatis Plus的默认配置）
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+
+zhua:
+  pro:
+    name: zhua_pro
+    title: CMS管理系统
+    isMsg: true
+    msgHtml: 欢迎使用CMS管理系统
+    version: 1.0
+    #版权年份
+    copyrightYear: 2020
+    #文件上传路径
+    defaultBaseDir: D:/v2file/
+    #地址是否放入项目static目录，如果未Y 放入项目得static。 profile配置失效。  为N存放在D:/v2file/ 前端读取相同，不受影响
+    isstatic: Y
+    #开启存放静态文件夹后目录
+    isroot_dir: static/file_upload/
+    #邮件功能
+    #邮箱发送smtp
+    email_smtp: smtp.sina.com
+    #邮箱发送端口
+    email_port: 465
+    #发送邮箱登录账号
+    email_account: 1@sina.com
+    #发送邮箱登录密码
+    email_password: 1
+    #实例演示开关 启动该模式删除增加修改会弹出演示模式提示框
+    demoEnabled: false
+    #漂亮得拖动验证码 默认false普通验证码、true滚动验证码
+    rollVerification: true
+
+# Logger Config
+logging:
+  level:
+    com.zhua.pro: debug
