@@ -132,13 +132,14 @@
                     if(typeVal == '0') {//菜单
                         $(".menu").show();
                         $(".button").hide();
-                        $(".button").find("input").attr("lay-verify","required");
-                        $(".menu").find("input").attr("lay-verify","");
+                        $(".menu").find("input").attr("lay-verify","required");
+                        $(".button").find("input").attr("lay-verify","");
+
                     }else if(typeVal == '1') {//按钮
                         $(".button").show();
                         $(".menu").hide();
-                        $(".menu").find("input").attr("lay-verify","required");
-                        $(".button").find("input").attr("lay-verify","");
+                        $(".button").find("input").attr("lay-verify","required");
+                        $(".menu").find("input").attr("lay-verify","");
                     }
                 });
 

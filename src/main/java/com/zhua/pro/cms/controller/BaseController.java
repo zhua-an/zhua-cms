@@ -61,8 +61,5 @@ public class BaseController {
         map.put("isMsg",titleVo.isMsg());
         //欢迎语
         map.put("msgHTML",titleVo.getMsgHtml());
-        //小控件
-        map.put("isControl",titleVo.isControl());
-        map.put("isribbon", titleVo.isIsribbon());
     }
 }

@@ -1,10 +1,13 @@
 # 欢迎使用 zhua-cms 后台管理系统
 
+> 次项目不想维护了，有bug请自行维护
+
 **zhua-cms 是基于spring boot + layuimini 开发的后台管理系统**
 
 # 项目介绍
 
 zhua-cms 是基于spring boot + layuimini 开发的后台管理系统，具有完善的权限管理功能，使用shiro进行权限控制，细化到按钮权限，使用mybatis plus数据库插件，实现高效快速开发，前端使用layuinimi，最简洁、清爽、易用的layui后台框架模板。
+包含了用户管理，权限管理，角色管理，权限分配，数据权限分配，字典管理，代码生成等功能 相比其他开源的后台开发平台脚手架，zhua-cms 使用简单，可以轻易完成中型，大型系统开发。
 
 # 主要特性
 
@@ -17,4 +20,10 @@ zhua-cms 是基于spring boot + layuimini 开发的后台管理系统，具有�
 - url地址hash定位，可以清楚看到当前tab的地址信息。
 - 刷新页面会保留当前的窗口，并且会定位当前窗口对应左侧菜单栏。
 - 支持font-awesome图标选择插件
+
+# 运行项目
+
+## 基础环境
+- jdk8+
+- maven
 

@@ -10,6 +10,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" th:href="@{/static/lib/layui-v2.5.5/css/layui.css}" media="all">
+    <!-- 滚动验证码 -->
+    <link rel="stylesheet" th:href="@{/static/lib/slidercaptcha/slidercaptcha.css}">
     <!--[if lt IE 9]>
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
@@ -32,6 +34,40 @@
         .admin-icon {margin-left:260px;margin-top:10px;font-size:30px;}
         i {position:absolute;}
         .admin-captcha {position:absolute;margin-left:205px;margin-top:-40px;}
+        .container-fluid{
+            z-index: 19891015;
+            position: relative;
+            /* position: relative; */
+            margin: 0 auto;
+        }
+        .slidercaptcha {
+            margin: 0 auto;
+            width: 314px;
+            height: 286px;
+            border-radius: 4px;
+            background-color:white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.125);
+            margin-top: 40px;
+        }
+        .card-header {
+            padding: .75rem 1.25rem;
+            margin-bottom: 0;
+            background-color: rgba(0,0,0,.03);
+            border-bottom: 1px solid rgba(0,0,0,.125);
+        }
+        .slidercaptcha .card-body {
+            padding: 1rem;
+        }
+
+        .slidercaptcha canvas:first-child {
+            border-radius: 4px;
+            border: 1px solid #e6e8eb;
+        }
+
+        .slidercaptcha.card .card-header {
+            background-image: none;
+            background-color: rgba(0, 0, 0, 0.03);
+        }
     </style>
 </head>
 <body>
@@ -50,7 +86,7 @@
                 <i class="layui-icon layui-icon-password admin-icon"></i>
                 <input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input admin-input" value="123456">
             </div>
-            <div>
+            <div th:if="${RollVerification!=true}">
                 <input type="text" name="code" placeholder="请输入验证码" autocomplete="off" class="layui-input admin-input admin-input-verify" value="xszg">
                 <img class="admin-captcha" width="90" height="30" src="/captcha/captchaImage?type=math">
             </div>
@@ -58,8 +94,25 @@
         </form>
     </div>
 </div>
+<!-- 验证码滚动弹窗 -->
+<div class="container-fluid row modal fade bs-example-modal-lg"  style="display: none;" id="myModal">
+    <div class="">
+        <div class="col-12">
+            <div class="slidercaptcha card">
+                <div class="card-header">
+                    <span>请完成安全验证</span>
+                </div>
+                <div class="card-body"><div id="captcha"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
 <script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script th:src="@{/static/lib/jquery-3.4.1/jquery-3.4.1.min.js}" charset="utf-8"></script>
+<!--兼容移动端滑块滑动表单安全验证码jquery插件 -->
+<script type="text/javascript" th:src="@{/static/lib/slidercaptcha/longbow.slidercaptcha.js}"></script>
 <script type="text/javascript" th:inline="javascript">
+    var isRoll=[[${RollVerification}]];
     layui.use(['form'], function () {
         var form = layui.form,
             layer = layui.layer,
@@ -83,26 +136,30 @@
                 layer.msg('验证码不能为空');
                 return false;
             }
+            if(isRoll){
+                $('#myModal').show();
+            }else{
+                $.ajax({
+                    type : "POST",
+                    url : "/admin/login",
+                    data : data,
+                    async : false,
+                    error : function(request) {
+                        layer.msg('系统错误', {icon: 7});
+                    },
+                    success : function(data) {
+                        if(data.code==200){
+                            location.href = '/admin/index';
+                        }else{
+                            layer.msg(data.msg, function(){
+                                //关闭后的操作
+                            });
+                        }
 
-            $.ajax({
-                type : "POST",
-                url : "/admin/login",
-                data : data,
-                async : false,
-                error : function(request) {
-                    layer.msg('系统错误', {icon: 7});
-                },
-                success : function(data) {
-                    if(data.code==200){
-                        location.href = '/admin/index';
-                    }else{
-                        layer.msg(data.msg, function(){
-                            //关闭后的操作
-                        });
                     }
+                });
+            }
 
-                }
-            });
 
             return false;
         });
@@ -111,7 +168,71 @@
             $(this).attr("src", "/captcha/captchaImage?type=math&readom="+new Date().getTime());
         })
 
+        rollVerification();
+
+        function rollVerification() {
+            $('#captcha').sliderCaptcha({
+                width: 280,
+                height: 150,
+                sliderL: 42,//拼图宽度
+                sliderR: 9,//拼图突出半径
+                offset: 5,//验证容错偏差值 默认5个像素偏差即认为验证通过
+                loadingText: '正在加载中...',//	图片加载时显示的文本信息
+                failedText: '再试一次',
+                barText: '向右滑动填充拼图',
+                repeatIcon: 'fa fa-refresh',
+                remoteUrl:"/captcha/isVerify",
+                verify: function (arr, url) {
+                    var ret = false;
+                    $.ajax({
+                        url: "/captcha/isVerify",
+                        data: JSON.stringify(arr),
+                        async: false,
+                        cache: false,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        success: function (result) {
+                            ret = result;
+                        }
+                    });
+                    return ret;
+                },
+                setSrc: function () {
+                    return  '/static/images/home_1.png';
+                },
+                onSuccess: function () {
+                    var dataFormJson=$("#loginForm").serialize();
+                    $.ajax({
+                        cache : true,
+                        type : "POST",
+                        url : "/admin/login",
+                        data : dataFormJson,
+                        async : false,
+                        error : function(request) {
+                            layer.msg('系统错误', {icon: 7});
+                        },
+                        success : function(data) {
+                            if(data.code==200){
+                                location.href = '/admin/index';
+                            }else{
+                                layer.msg(data.msg, function(){
+                                    //关闭后的操作
+                                });
+                            }
+                        }
+                    });
+                },
+                onFail: function () {
+
+                },
+                onRefresh: function () {
+
+                }
+            });
+        }
     });
+
 </script>
 </body>
 </html>

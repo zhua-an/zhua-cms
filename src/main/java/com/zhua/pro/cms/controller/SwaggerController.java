@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Api(value = "Api接口文档")
 @RestController
-@RequestMapping("/SwaggerController")
+@RequestMapping("/swagger")
 public class SwaggerController extends BaseController {
 
     //跳转页面参数
@@ -32,7 +32,7 @@ public class SwaggerController extends BaseController {
      */
     @ApiOperation(value = "展示页面", notes = "展示页面")
     @GetMapping("/view")
-    @RequiresPermissions("system:swagger:view")
+    @RequiresPermissions("sys_swagger_view")
     public ModelAndView view(ModelMap model) {
         String str="API文档";
         setTitle(model, new TitleVo("列表", str+"管理", true,"欢迎进入"+str+"页面", true, false));
