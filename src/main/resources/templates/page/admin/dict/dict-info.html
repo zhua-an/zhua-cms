@@ -15,31 +15,36 @@
     <div class="layui-form-item">
         <label class="layui-form-label required">标签名</label>
         <div class="layui-input-block">
-            <input type="text" name="label" lay-verify="required" lay-reqtext="标签名不能为空" placeholder="请输入标签名" th:value="${sysDict?.label}" class="layui-input">
+            <input type="text" name="label" lay-verify="required" lay-reqtext="标签名不能为空" placeholder="请输入标签名"
+                   th:value="${sysDict?.label}" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label required">类型</label>
         <div class="layui-input-block">
-            <input type="text" name="type" lay-verify="required" lay-reqtext="类型不能为空" placeholder="请输入类型" th:value="${sysDict?.type}" class="layui-input">
+            <input type="text" name="type" lay-verify="required" lay-reqtext="类型不能为空" placeholder="请输入类型"
+                   th:value="${sysDict?.type}" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label required">字典值</label>
         <div class="layui-input-block">
-            <input type="text" name="value" lay-verify="required" lay-reqtext="字典值不能为空" placeholder="请输入字典值" th:value="${sysDict?.value}" class="layui-input">
+            <input type="text" name="value" lay-verify="required" lay-reqtext="字典值不能为空" placeholder="请输入字典值"
+                   th:value="${sysDict?.value}" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label required">排序号</label>
         <div class="layui-input-block">
-            <input type="number" name="sort" lay-verify="required" lay-reqtext="排序号不能为空" placeholder="请输入排序号" th:value="${sysDict?.sort}" class="layui-input">
+            <input type="number" name="sort" lay-verify="required" lay-reqtext="排序号不能为空" placeholder="请输入排序号"
+                   th:value="${sysDict?.sort}" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">描述信息</label>
         <div class="layui-input-block">
-            <textarea name="description" class="layui-textarea" th:text="${sysDict?.description}" placeholder="请输入描述信息"></textarea>
+            <textarea name="description" class="layui-textarea" th:text="${sysDict?.description}"
+                      placeholder="请输入描述信息"></textarea>
         </div>
     </div>
 
@@ -60,25 +65,25 @@
         form.on('submit(saveBtn)', function (data) {
             var param = data.field;
             var action = "add";
-            if(param.id) {
+            if (param.id) {
                 action = "update";
             }
             $.ajax({
-                type : "POST",
-                url : action,
+                type: "POST",
+                url: action,
                 data: param,
-                error : function(request) {
+                error: function (request) {
                     layer.msg('系统错误', {icon: 7});
                 },
-                success : function(res) {
-                    if(res.code==200){
+                success: function (res) {
+                    if (res.code == 200) {
                         layer.msg(res.msg, {icon: 1}, function () {
                             //查询
                             parent.layui.jquery("button[lay-filter='data-search-btn']").click();
                             var iframeIndex = parent.layer.getFrameIndex(window.name);
                             parent.layer.close(iframeIndex);
                         });
-                    }else{
+                    } else {
                         layer.msg(res.msg, {icon: 7});
                     }
                 }

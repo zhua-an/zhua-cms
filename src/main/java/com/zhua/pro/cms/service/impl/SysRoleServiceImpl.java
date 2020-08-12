@@ -37,7 +37,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         //插入
         String[] menuIdStr = menuIds.split(",");
-        for(String menuId:menuIdStr) {
+        for (String menuId : menuIdStr) {
             SysRoleMenu sysRoleMenu = new SysRoleMenu();
             sysRoleMenu.setRoleId(sysRole.getId());
             sysRoleMenu.setMenuId(Integer.parseInt(menuId));
@@ -56,7 +56,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         //插入
         String[] menuIdStr = menuIds.split(",");
-        for(String menuId:menuIdStr) {
+        for (String menuId : menuIdStr) {
             SysRoleMenu sysRoleMenu = new SysRoleMenu();
             sysRoleMenu.setRoleId(info.getId());
             sysRoleMenu.setMenuId(Integer.parseInt(menuId));

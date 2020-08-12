@@ -14,17 +14,19 @@ import java.io.IOException;
 
 /**
  * 文件上传工具类
- * @author fuce 
+ *
+ * @author fuce
  * @date: 2018年9月22日 下午10:33:23
  */
 public class FileUploadUtils {
 
-    private FileUploadUtils(){}
-    
+    private FileUploadUtils() {
+    }
+
     /**
      * spring.servlet.multipart.maxFileSize
      */
-    public static  long DEFAULT_MAX_SIZE=Long.valueOf(FileConfig.getMaxFileSize())*1024*1024;
+    public static long DEFAULT_MAX_SIZE = Long.valueOf(FileConfig.getMaxFileSize()) * 1024 * 1024;
     /**
      * 默认上传的地址
      */
@@ -33,7 +35,7 @@ public class FileUploadUtils {
     /**
      * 是否上传到static
      */
-    private static String isstatic=ZhuaProConfig.getIsstatic();
+    private static String isstatic = ZhuaProConfig.getIsstatic();
 
     /**
      * 默认的文件名最大长度
@@ -46,53 +48,47 @@ public class FileUploadUtils {
 
     private static int counter = 0;
 
-    public static void setDefaultBaseDir(String defaultBaseDir)
-    {
+    public static void setDefaultBaseDir(String defaultBaseDir) {
         FileUploadUtils.defaultBaseDir = defaultBaseDir;
     }
 
-    public static String getDefaultBaseDir()
-    {
+    public static String getDefaultBaseDir() {
         return defaultBaseDir;
     }
 
     public static String getIsstatic() {
-		return isstatic;
-	}
+        return isstatic;
+    }
 
-	public static void setIsstatic(String isstatic) {
-		FileUploadUtils.isstatic = isstatic;
-	}
-	
-	/**
-	 * 静态文件上传后存放的目录
-	 */
-	public static String getRoot_dir() {
-		String url= ClassUtils.getDefaultClassLoader().getResource("").getPath()+ZhuaProConfig.getIsroot_dir();
-		return url;
-	}
+    public static void setIsstatic(String isstatic) {
+        FileUploadUtils.isstatic = isstatic;
+    }
+
+    /**
+     * 静态文件上传后存放的目录
+     */
+    public static String getRoot_dir() {
+        String url = ClassUtils.getDefaultClassLoader().getResource("").getPath() + ZhuaProConfig.getIsroot_dir();
+        return url;
+    }
 
 
-	/**
+    /**
      * 以默认配置进行文件上传
      *
      * @param file 上传的文件
      * @return 文件名称
      * @throws Exception
      */
-    public static final String upload(MultipartFile file) throws IOException
-    {
-        try
-        {
-        	if("Y".equals(getIsstatic())) {//获取根目录
-        		
-        		 return upload(getRoot_dir(), file);
-        	}else {//自定义目录
-        		 return upload(getDefaultBaseDir(), file);
-        	}
-        }
-        catch (Exception e)
-        {
+    public static final String upload(MultipartFile file) throws IOException {
+        try {
+            if ("Y".equals(getIsstatic())) {//获取根目录
+
+                return upload(getRoot_dir(), file);
+            } else {//自定义目录
+                return upload(getDefaultBaseDir(), file);
+            }
+        } catch (Exception e) {
             throw new IOException(e);
         }
     }
@@ -101,26 +97,24 @@ public class FileUploadUtils {
      * 文件上传
      *
      * @param baseDir 相对应用的基目录
-     * @param file 上传的文件
+     * @param file    上传的文件
      * @return 返回上传成功的文件名
-     * @throws FileSizeLimitExceededException 如果超出最大大小
+     * @throws FileSizeLimitExceededException       如果超出最大大小
      * @throws FileNameLengthLimitExceededException 文件名太长
-     * @throws IOException 比如读写文件出错时
+     * @throws IOException                          比如读写文件出错时
      */
     public static final String upload(String baseDir, MultipartFile file)
-            throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException
-    {
-    	String fileName=file.getOriginalFilename();
-    	// 获得文件后缀名称
-    	String suffixName = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
-    	if(StringUtils.isEmpty(suffixName)) {
-    		//如果没有后缀默认后缀
-    		suffixName=FileUploadUtils.IMAGE_JPG_EXTENSION;
-    	}
-    	
+            throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException {
+        String fileName = file.getOriginalFilename();
+        // 获得文件后缀名称
+        String suffixName = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
+        if (StringUtils.isEmpty(suffixName)) {
+            //如果没有后缀默认后缀
+            suffixName = FileUploadUtils.IMAGE_JPG_EXTENSION;
+        }
+
         int fileNamelength = fileName.length();
-        if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
-        {
+        if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
             throw new FileNameLengthLimitExceededException(fileName, fileNamelength,
                     FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
         }
@@ -134,16 +128,13 @@ public class FileUploadUtils {
         return new_fileName;
     }
 
-    private static final File getAbsoluteFile(String uploadDir, String filename) throws IOException
-    {
+    private static final File getAbsoluteFile(String uploadDir, String filename) throws IOException {
         File desc = new File(File.separator + filename);
 
-        if (!desc.getParentFile().exists())
-        {
+        if (!desc.getParentFile().exists()) {
             desc.getParentFile().mkdirs();
         }
-        if (!desc.exists())
-        {
+        if (!desc.exists()) {
             desc.createNewFile();
         }
         return desc;
@@ -152,8 +143,7 @@ public class FileUploadUtils {
     /**
      * 编码文件名
      */
-    private static final String encodingFilename(String filename, String extension)
-    {
+    private static final String encodingFilename(String filename, String extension) {
         filename = filename.replace("_", " ");
         filename = new Md5Hash(filename + System.nanoTime() + counter++).toHex().toString() + extension;
         return filename;
@@ -166,11 +156,9 @@ public class FileUploadUtils {
      * @return
      * @throws FileSizeLimitExceededException 如果超出最大大小
      */
-    public static final void assertAllowed(MultipartFile file) throws FileSizeLimitExceededException
-    {
+    public static final void assertAllowed(MultipartFile file) throws FileSizeLimitExceededException {
         long size = file.getSize();
-        if (DEFAULT_MAX_SIZE != -1 && size > DEFAULT_MAX_SIZE)
-        {
+        if (DEFAULT_MAX_SIZE != -1 && size > DEFAULT_MAX_SIZE) {
             throw new FileSizeLimitExceededException("超过默认大小", size, DEFAULT_MAX_SIZE);
         }
     }

@@ -32,12 +32,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public Map<String, Object> menu() {
         Map<String, Object> map = new HashMap<>(16);
-        Map<String,Object> home = new HashMap<>(16);
-        Map<String,Object> logo = new HashMap<>(16);
+        Map<String, Object> home = new HashMap<>(16);
+        Map<String, Object> logo = new HashMap<>(16);
 
         List<SysMenu> menuList = new ArrayList<>();
         List<String> roleList = sysUserRoleMapper.queryUserRole(Integer.parseInt(ShiroUtils.getUserId()));
-        if(roleList != null && roleList.size() > 0) {
+        if (roleList != null && roleList.size() > 0) {
             roleList.stream().forEach(roleCode -> menuList.addAll(sysMenuMapper.getMenuByRoleCode(roleCode)));
         }
 //        QueryWrapper<SysMenu> sysMenuQueryWrapper = new QueryWrapper<>();
@@ -46,7 +46,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 //        List<SysMenu> menuList = sysMenuMapper.selectList(sysMenuQueryWrapper);
         List<MenuVo> menuInfo = new ArrayList<>();
         for (SysMenu e : menuList) {
-            if(CommonConstants.MENU.equals(e.getType())) {
+            if (CommonConstants.MENU.equals(e.getType())) {
                 MenuVo menuVO = new MenuVo();
                 menuVO.setId(e.getId());
                 menuVO.setPid(e.getParentId());

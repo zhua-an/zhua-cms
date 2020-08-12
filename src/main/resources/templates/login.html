@@ -17,44 +17,130 @@
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
-        body {background-image:url("/static/images/bg.jpg");height:100%;width:100%;}
-        #container{height:100%;width:100%;}
-        input:-webkit-autofill {-webkit-box-shadow:inset 0 0 0 1000px #fff;background-color:transparent;}
-        .admin-login-background {width:300px;height:300px;position:absolute;left:50%;top:40%;margin-left:-150px;margin-top:-100px;}
-        .admin-header {text-align:center;margin-bottom:20px;color:#ffffff;font-weight:bold;font-size:40px}
-        .admin-input {border-top-style:none;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;height:50px;width:300px;padding-bottom:0px;}
-        .admin-input::-webkit-input-placeholder {color:#a78369}
-        .layui-icon-username {color:#a78369 !important;}
-        .layui-icon-username:hover {color:#9dadce !important;}
-        .layui-icon-password {color:#a78369 !important;}
-        .layui-icon-password:hover {color:#9dadce !important;}
-        .admin-input-username {border-top-style:solid;border-radius:10px 10px 0 0;}
-        .admin-input-verify {border-radius:0 0 10px 10px;}
-        .admin-button {margin-top:20px;font-weight:bold;font-size:18px;width:300px;height:50px;border-radius:5px;background-color:#a78369;border:1px solid #d8b29f}
-        .admin-icon {margin-left:260px;margin-top:10px;font-size:30px;}
-        i {position:absolute;}
-        .admin-captcha {position:absolute;margin-left:205px;margin-top:-40px;}
-        .container-fluid{
+        body {
+            background-image: url("/static/images/bg.jpg");
+            height: 100%;
+            width: 100%;
+        }
+
+        #container {
+            height: 100%;
+            width: 100%;
+        }
+
+        input:-webkit-autofill {
+            -webkit-box-shadow: inset 0 0 0 1000px #fff;
+            background-color: transparent;
+        }
+
+        .admin-login-background {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            left: 50%;
+            top: 40%;
+            margin-left: -150px;
+            margin-top: -100px;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 40px
+        }
+
+        .admin-input {
+            border-top-style: none;
+            border-right-style: solid;
+            border-bottom-style: solid;
+            border-left-style: solid;
+            height: 50px;
+            width: 300px;
+            padding-bottom: 0px;
+        }
+
+        .admin-input::-webkit-input-placeholder {
+            color: #a78369
+        }
+
+        .layui-icon-username {
+            color: #a78369 !important;
+        }
+
+        .layui-icon-username:hover {
+            color: #9dadce !important;
+        }
+
+        .layui-icon-password {
+            color: #a78369 !important;
+        }
+
+        .layui-icon-password:hover {
+            color: #9dadce !important;
+        }
+
+        .admin-input-username {
+            border-top-style: solid;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .admin-input-verify {
+            border-radius: 0 0 10px 10px;
+        }
+
+        .admin-button {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            width: 300px;
+            height: 50px;
+            border-radius: 5px;
+            background-color: #a78369;
+            border: 1px solid #d8b29f
+        }
+
+        .admin-icon {
+            margin-left: 260px;
+            margin-top: 10px;
+            font-size: 30px;
+        }
+
+        i {
+            position: absolute;
+        }
+
+        .admin-captcha {
+            position: absolute;
+            margin-left: 205px;
+            margin-top: -40px;
+        }
+
+        .container-fluid {
             z-index: 19891015;
             position: relative;
             /* position: relative; */
             margin: 0 auto;
         }
+
         .slidercaptcha {
             margin: 0 auto;
             width: 314px;
             height: 286px;
             border-radius: 4px;
-            background-color:white;
+            background-color: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.125);
             margin-top: 40px;
         }
+
         .card-header {
             padding: .75rem 1.25rem;
             margin-bottom: 0;
-            background-color: rgba(0,0,0,.03);
-            border-bottom: 1px solid rgba(0,0,0,.125);
+            background-color: rgba(0, 0, 0, .03);
+            border-bottom: 1px solid rgba(0, 0, 0, .125);
         }
+
         .slidercaptcha .card-body {
             padding: 1rem;
         }
@@ -80,14 +166,17 @@
         <form id="loginForm" class="layui-form" action="">
             <div>
                 <i class="layui-icon layui-icon-username admin-icon"></i>
-                <input type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input admin-input admin-input-username" value="admin">
+                <input type="text" name="username" placeholder="请输入用户名" autocomplete="off"
+                       class="layui-input admin-input admin-input-username" value="admin">
             </div>
             <div>
                 <i class="layui-icon layui-icon-password admin-icon"></i>
-                <input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input admin-input" value="123456">
+                <input type="password" name="password" placeholder="请输入密码" autocomplete="off"
+                       class="layui-input admin-input" value="123456">
             </div>
             <div th:if="${RollVerification!=true}">
-                <input type="text" name="code" placeholder="请输入验证码" autocomplete="off" class="layui-input admin-input admin-input-verify" value="xszg">
+                <input type="text" name="code" placeholder="请输入验证码" autocomplete="off"
+                       class="layui-input admin-input admin-input-verify" value="xszg">
                 <img class="admin-captcha" width="90" height="30" src="/captcha/captchaImage?type=math">
             </div>
             <button class="layui-btn admin-button" lay-submit lay-filter="login">登 陆</button>
@@ -95,14 +184,16 @@
     </div>
 </div>
 <!-- 验证码滚动弹窗 -->
-<div class="container-fluid row modal fade bs-example-modal-lg"  style="display: none;" id="myModal">
+<div class="container-fluid row modal fade bs-example-modal-lg" style="display: none;" id="myModal">
     <div class="">
         <div class="col-12">
             <div class="slidercaptcha card">
                 <div class="card-header">
                     <span>请完成安全验证</span>
                 </div>
-                <div class="card-body"><div id="captcha"></div></div>
+                <div class="card-body">
+                    <div id="captcha"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -112,7 +203,7 @@
 <!--兼容移动端滑块滑动表单安全验证码jquery插件 -->
 <script type="text/javascript" th:src="@{/static/lib/slidercaptcha/longbow.slidercaptcha.js}"></script>
 <script type="text/javascript" th:inline="javascript">
-    var isRoll=[[${RollVerification}]];
+    var isRoll = [[${RollVerification}]];
     layui.use(['form'], function () {
         var form = layui.form,
             layer = layui.layer,
@@ -136,22 +227,22 @@
                 layer.msg('验证码不能为空');
                 return false;
             }
-            if(isRoll){
+            if (isRoll) {
                 $('#myModal').show();
-            }else{
+            } else {
                 $.ajax({
-                    type : "POST",
-                    url : "/admin/login",
-                    data : data,
-                    async : false,
-                    error : function(request) {
+                    type: "POST",
+                    url: "/admin/login",
+                    data: data,
+                    async: false,
+                    error: function (request) {
                         layer.msg('系统错误', {icon: 7});
                     },
-                    success : function(data) {
-                        if(data.code==200){
+                    success: function (data) {
+                        if (data.code == 200) {
                             location.href = '/admin/index';
-                        }else{
-                            layer.msg(data.msg, function(){
+                        } else {
+                            layer.msg(data.msg, function () {
                                 //关闭后的操作
                             });
                         }
@@ -165,7 +256,7 @@
         });
 
         $(".admin-captcha").click(function () {
-            $(this).attr("src", "/captcha/captchaImage?type=math&readom="+new Date().getTime());
+            $(this).attr("src", "/captcha/captchaImage?type=math&readom=" + new Date().getTime());
         })
 
         rollVerification();
@@ -181,7 +272,7 @@
                 failedText: '再试一次',
                 barText: '向右滑动填充拼图',
                 repeatIcon: 'fa fa-refresh',
-                remoteUrl:"/captcha/isVerify",
+                remoteUrl: "/captcha/isVerify",
                 verify: function (arr, url) {
                     var ret = false;
                     $.ajax({
@@ -199,24 +290,24 @@
                     return ret;
                 },
                 setSrc: function () {
-                    return  '/static/images/home_1.png';
+                    return '/static/images/home_1.png';
                 },
                 onSuccess: function () {
-                    var dataFormJson=$("#loginForm").serialize();
+                    var dataFormJson = $("#loginForm").serialize();
                     $.ajax({
-                        cache : true,
-                        type : "POST",
-                        url : "/admin/login",
-                        data : dataFormJson,
-                        async : false,
-                        error : function(request) {
+                        cache: true,
+                        type: "POST",
+                        url: "/admin/login",
+                        data: dataFormJson,
+                        async: false,
+                        error: function (request) {
                             layer.msg('系统错误', {icon: 7});
                         },
-                        success : function(data) {
-                            if(data.code==200){
+                        success: function (data) {
+                            if (data.code == 200) {
                                 location.href = '/admin/index';
-                            }else{
-                                layer.msg(data.msg, function(){
+                            } else {
+                                layer.msg(data.msg, function () {
                                     //关闭后的操作
                                 });
                             }

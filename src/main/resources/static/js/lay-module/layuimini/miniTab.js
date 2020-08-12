@@ -53,8 +53,10 @@ layui.define(["element", "layer", "jquery"], function (exports) {
             if (options.isIframe) ele = parent.layui.element;
             ele.tabAdd('layuiminiTab', {
                 title: '<span class="layuimini-tab-active"></span><span>' + options.title + '</span><i class="layui-icon layui-unselect layui-tab-close">ဆ</i>' //用于演示
-                , content: '<iframe width="100%" height="100%" frameborder="no" border="0" marginwidth="0" marginheight="0"   src="' + options.href + '"></iframe>'
-                , id: options.tabId
+                ,
+                content: '<iframe width="100%" height="100%" frameborder="no" border="0" marginwidth="0" marginheight="0"   src="' + options.href + '"></iframe>'
+                ,
+                id: options.tabId
             });
             $('.layuimini-menu-left').attr('layuimini-tab-tag', 'add');
             sessionStorage.setItem('layuiminimenu_' + options.tabId, options.title);
@@ -404,10 +406,10 @@ layui.define(["element", "layer", "jquery"], function (exports) {
             options.menuList = options.menuList || [];
             if (!options.urlHashLocation) return false;
             var tabId = location.hash.replace(/^#\//, '');
-            if (tabId === null || tabId === undefined || tabId ==='') return false;
+            if (tabId === null || tabId === undefined || tabId === '') return false;
 
             // 判断是否为首页
-            if(tabId ===options.homeInfo.href) return false;
+            if (tabId === options.homeInfo.href) return false;
 
             // 判断是否为右侧菜单
             var menu = miniTab.searchMenu(tabId, options.menuList);

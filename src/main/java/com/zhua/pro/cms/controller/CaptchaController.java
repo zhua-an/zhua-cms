@@ -35,6 +35,7 @@ public class CaptchaController {
 
     /**
      * 生成验证码
+     *
      * @param request
      * @param response
      * @param type
@@ -96,6 +97,7 @@ public class CaptchaController {
 
     /**
      * 滚动条验证码
+     *
      * @param datas
      * @return
      */

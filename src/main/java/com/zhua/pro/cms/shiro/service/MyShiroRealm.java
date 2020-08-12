@@ -61,7 +61,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 //		System.out.println("----->>userInfo=" + userInfo.getUsername() + "---"+ userInfo.getPassword());
         if (userInfo == null)
             return null;
-        else{
+        else {
             LoginUser loginUser = new LoginUser();
             BeanUtils.copyProperties(userInfo, loginUser);
             SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
@@ -80,19 +80,19 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         System.out.println("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
-        if(principals == null){
+        if (principals == null) {
             throw new AuthorizationException("principals should not be null");
         }
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        LoginUser userinfo  = (LoginUser)principals.getPrimaryPrincipal();
-        Integer uid=userinfo.getId();
+        LoginUser userinfo = (LoginUser) principals.getPrimaryPrincipal();
+        Integer uid = userinfo.getId();
         List<String> roleList = sysUserRoleMapper.queryUserRole(uid);
-        if(roleList != null && roleList.size() > 0) {
+        if (roleList != null && roleList.size() > 0) {
             //添加角色代码
             authorizationInfo.setRoles(new HashSet<>(roleList));
         }
         List<String> permissionList = sysUserRoleMapper.queryUserPermission(uid);
-        if(permissionList != null && permissionList.size() > 0) {
+        if (permissionList != null && permissionList.size() > 0) {
             //添加权限代码
             authorizationInfo.setStringPermissions(new HashSet<>(permissionList));
         }
@@ -109,7 +109,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     public AuthorizationInfo getAuthorizationInfo(PrincipalCollection principals) {
         AuthorizationInfo authorizationInfo = super.getAuthorizationInfo(principals);
-        return  authorizationInfo;
+        return authorizationInfo;
     }
 
 }

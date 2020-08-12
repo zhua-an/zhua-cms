@@ -41,6 +41,7 @@ public class SysMenuController {
 
     /**
      * 获取菜单
+     *
      * @return
      */
     @GetMapping("/menu")
@@ -50,9 +51,10 @@ public class SysMenuController {
 
     /**
      * 权限管理列表
+     *
      * @return
      */
-    @ApiOperation(value="权限管理列表",notes="权限管理列表")
+    @ApiOperation(value = "权限管理列表", notes = "权限管理列表")
     @GetMapping("/init")
     public ModelAndView init() {
         return new ModelAndView("page/admin/menu/menu-list");
@@ -60,18 +62,19 @@ public class SysMenuController {
 
     /**
      * 权限列表查询
+     *
      * @param pageInfo
      * @param form
      * @return
      */
-    @ApiOperation(value="权限列表查询",notes="权限管理查询")
+    @ApiOperation(value = "权限列表查询", notes = "权限管理查询")
     @GetMapping("/page")
     public R page(PageInfo<SysMenu> pageInfo, SysMenu form) {
         R r = new R();
 //        IPage<SysMenu> page = new Page<>(pageInfo.getPage(),pageInfo.getLimit());
         //条件构造器
         QueryWrapper<SysMenu> wrapper = new QueryWrapper();
-        wrapper.like(StringUtils.isNoneBlank(form.getMenuName()),"menu_name", form.getMenuName());
+        wrapper.like(StringUtils.isNoneBlank(form.getMenuName()), "menu_name", form.getMenuName());
         wrapper.orderByDesc("create_time");
 //        sysMenuService.page(page, wrapper);
         List<SysMenu> list = sysMenuService.list(wrapper);
@@ -81,9 +84,10 @@ public class SysMenuController {
 
     /**
      * 获取当前登录人权限树
+     *
      * @return
      */
-    @ApiOperation(value="获取当前登录人权限树",notes="获取当前登录人权限树")
+    @ApiOperation(value = "获取当前登录人权限树", notes = "获取当前登录人权限树")
     @GetMapping("/getMenuTree")
     public R getMenuTree(@RequestParam(required = false) String perm) {
         R r = new R();
@@ -92,7 +96,7 @@ public class SysMenuController {
         queryWrapper.eq("del_flag", CommonConstants.STATUS_NORMAL);
         queryWrapper.orderByAsc("id");
         List<SysMenu> sysMenuList = sysMenuService.list(queryWrapper);
-        if(sysMenuList != null && sysMenuList.size() > 0) {
+        if (sysMenuList != null && sysMenuList.size() > 0) {
             List<TreeVo> treeList = new ArrayList<>();
             sysMenuList.stream().forEach(sysMenu -> {
                 TreeVo treeVo = new TreeVo();
@@ -101,12 +105,12 @@ public class SysMenuController {
                 treeVo.setLabel(sysMenu.getMenuName());
                 treeList.add(treeVo);
             });
-            if("1".equals(perm)) {
+            if ("1".equals(perm)) {
                 //根据当前角色获取选择权限
                 List<SysMenu> sysMenus = sysMenuService.getCurrentMenu(ShiroUtils.getUserId());
                 sysMenus.stream().forEach(sysMenu -> {
-                    for(TreeVo treeVo:treeList) {
-                        if(treeVo.getId().intValue() == sysMenu.getId().intValue()) {
+                    for (TreeVo treeVo : treeList) {
+                        if (treeVo.getId().intValue() == sysMenu.getId().intValue()) {
                             treeVo.setChecked(true);
                         }
                     }
@@ -115,26 +119,27 @@ public class SysMenuController {
 
             r.put("code", 0);
             r.put("data", TreeUtil.toTree(treeList, -1));
-        }else {
+        } else {
         }
         return r;
     }
 
     /**
      * 新增权限页面
+     *
      * @return
      */
-    @ApiOperation(value="新增权限页面",notes="新增权限页面")
+    @ApiOperation(value = "新增权限页面", notes = "新增权限页面")
     @GetMapping("/info")
     public ModelAndView info(Integer id) {
         ModelAndView modelAndView = new ModelAndView("page/admin/menu/menu-info");
-        if(id != null) {
+        if (id != null) {
             SysMenu sysMenu = sysMenuService.getById(id);
-            if(sysMenu != null) {
+            if (sysMenu != null) {
                 SysMenuVo sysMenuVo = new SysMenuVo();
                 BeanUtils.copyProperties(sysMenu, sysMenuVo);
                 //查找父节点
-                if(!CommonConstants.TOP_TREE_ID.equals(String.valueOf(sysMenu.getParentId()))) {
+                if (!CommonConstants.TOP_TREE_ID.equals(String.valueOf(sysMenu.getParentId()))) {
                     SysMenu parentMenu = sysMenuService.getById(sysMenu.getParentId());
                     sysMenuVo.setParentMenuName(parentMenu.getMenuName());
                 }
@@ -148,16 +153,17 @@ public class SysMenuController {
 
     /**
      * 保存
+     *
      * @param sysMenu
      * @return
      */
-    @ApiOperation(value="新增权限",notes="新增权限")
+    @ApiOperation(value = "新增权限", notes = "新增权限")
     @PostMapping("/add")
     public R add(SysMenu sysMenu) {
-        if(sysMenu == null) {
+        if (sysMenu == null) {
             return R.error("获取权限信息失败!");
         }
-        if(sysMenu.getParentId() == null) {
+        if (sysMenu.getParentId() == null) {
             sysMenu.setParentId(Integer.parseInt(CommonConstants.TOP_TREE_ID));
         }
         sysMenu.setDelFlag(CommonConstants.STATUS_NORMAL);
@@ -169,21 +175,22 @@ public class SysMenuController {
 
     /**
      * 更新
+     *
      * @param sysMenu
      * @return
      */
-    @ApiOperation(value="修改权限",notes="修改权限")
+    @ApiOperation(value = "修改权限", notes = "修改权限")
     @PostMapping("/update")
     public R update(SysMenu sysMenu) {
-        if(sysMenu == null || sysMenu.getId() == null) {
+        if (sysMenu == null || sysMenu.getId() == null) {
             return R.error("获取权限信息失败!");
         }
         SysMenu info = sysMenuService.getById(sysMenu.getId());
-        if(info == null) {
+        if (info == null) {
             return R.error("本系统不存在该权限信息!");
         }
         BeanUtils.copyProperties(sysMenu, info);
-        if(info.getParentId() == null) {
+        if (info.getParentId() == null) {
             info.setParentId(Integer.parseInt(CommonConstants.TOP_TREE_ID));
         }
         info.setUpdateTime(LocalDateTime.now());
@@ -193,14 +200,15 @@ public class SysMenuController {
 
     /**
      * 删除权限
+     *
      * @param id
      * @return
      */
-    @ApiOperation(value="删除权限",notes="删除权限")
+    @ApiOperation(value = "删除权限", notes = "删除权限")
     @PostMapping("/delete/{id}")
     public R delete(@PathVariable Integer id) {
         SysMenu info = sysMenuService.getById(id);
-        if(info == null) {
+        if (info == null) {
             return R.error("本系统不存在该权限信息!");
         }
         info.setDelFlag(CommonConstants.STATUS_DEL);

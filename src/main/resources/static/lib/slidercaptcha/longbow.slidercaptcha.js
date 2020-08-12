@@ -4,7 +4,7 @@
     var SliderCaptcha = function (element, options) {
         this.$element = $(element);
         this.options = $.extend({}, SliderCaptcha.DEFAULTS, options);
-        this.$element.css({ 'position': 'relative', 'width': this.options.width + 'px', 'margin': '0 auto' });
+        this.$element.css({'position': 'relative', 'width': this.options.width + 'px', 'margin': '0 auto'});
         this.init();
     };
 
@@ -119,8 +119,7 @@
 
         if ($.isFunction(Object.assign)) {
             Object.assign(this, _canvas);
-        }
-        else {
+        } else {
             $.extend(this, _canvas);
         }
     };
@@ -283,9 +282,15 @@
         document.addEventListener('mouseup', handleDragEnd);
         document.addEventListener('touchend', handleDragEnd);
 
-        document.addEventListener('mousedown', function () { return false; });
-        document.addEventListener('touchstart', function () { return false; });
-        document.addEventListener('swipe', function () { return false; });
+        document.addEventListener('mousedown', function () {
+            return false;
+        });
+        document.addEventListener('touchstart', function () {
+            return false;
+        });
+        document.addEventListener('swipe', function () {
+            return false;
+        });
     };
 
     _proto.verify = function () {
@@ -294,12 +299,17 @@
         var verified = false;
         if (this.options.remoteUrl !== null) {
             verified = this.options.verify(arr, this.options.remoteUrl);
-        }
-        else {
-            var sum = function (x, y) { return x + y; };
-            var square = function (x) { return x * x; };
+        } else {
+            var sum = function (x, y) {
+                return x + y;
+            };
+            var square = function (x) {
+                return x * x;
+            };
             var average = arr.reduce(sum) / arr.length;
-            var deviations = arr.map(function (x) { return x - average; });
+            var deviations = arr.map(function (x) {
+                return x - average;
+            });
             var stddev = Math.sqrt(deviations.map(square).reduce(sum) / arr.length);
             verified = stddev !== 0;
         }

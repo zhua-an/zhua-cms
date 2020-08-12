@@ -15,6 +15,7 @@ public interface ISysRoleService extends IService<SysRole> {
 
     /**
      * 保存角色
+     *
      * @param sysRole
      * @param menuIds
      */
@@ -22,6 +23,7 @@ public interface ISysRoleService extends IService<SysRole> {
 
     /**
      * 更新角色
+     *
      * @param info
      * @param menuIds
      */
@@ -29,12 +31,14 @@ public interface ISysRoleService extends IService<SysRole> {
 
     /**
      * 删除角色
+     *
      * @param info
      */
     void deleteById(SysRole info);
 
     /**
      * 批量删除
+     *
      * @param ids
      */
     void batchDelete(String ids);

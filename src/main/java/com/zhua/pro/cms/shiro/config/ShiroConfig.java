@@ -30,6 +30,7 @@ public class ShiroConfig {
 
     /**
      * 这是shiro的大管家，相当于mybatis里的SqlSessionFactoryBean
+     *
      * @param securityManager
      * @return
      */
@@ -51,6 +52,7 @@ public class ShiroConfig {
 
     /**
      * web应用管理配置
+     *
      * @param shiroRealm
      * @param cacheManager
      * @param manager
@@ -65,22 +67,26 @@ public class ShiroConfig {
         securityManager.setSessionManager(sessionManager());
         return securityManager;
     }
+
     /**
      * session过期控制
+     *
      * @return
      * @author fuce
      * @Date 2019年11月2日 下午12:49:49
      */
     @Bean
     public DefaultWebSessionManager sessionManager() {
-        DefaultWebSessionManager defaultWebSessionManager=new DefaultWebSessionManager();
+        DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
         // 设置session过期时间3600s
-        Long timeout=60L*1000*60;//毫秒级别
+        Long timeout = 60L * 1000 * 60;//毫秒级别
         defaultWebSessionManager.setGlobalSessionTimeout(timeout);
         return defaultWebSessionManager;
     }
+
     /**
      * 加密算法
+     *
      * @return
      */
     @Bean
@@ -93,6 +99,7 @@ public class ShiroConfig {
 
     /**
      * 记住我的配置
+     *
      * @return
      */
     @Bean
@@ -100,22 +107,25 @@ public class ShiroConfig {
         Cookie cookie = new SimpleCookie("rememberMe");
         cookie.setHttpOnly(true);//通过js脚本将无法读取到cookie信息
         cookie.setMaxAge(60 * 60 * 24);//cookie保存一天
-        CookieRememberMeManager manager=new CookieRememberMeManager();
+        CookieRememberMeManager manager = new CookieRememberMeManager();
         manager.setCookie(cookie);
         return manager;
     }
+
     /**
      * 缓存配置
+     *
      * @return
      */
     @Bean
     public CacheManager cacheManager() {
-        MemoryConstrainedCacheManager cacheManager=new MemoryConstrainedCacheManager();//使用内存缓存
+        MemoryConstrainedCacheManager cacheManager = new MemoryConstrainedCacheManager();//使用内存缓存
         return cacheManager;
     }
 
     /**
      * 配置realm，用于认证和授权
+     *
      * @param hashedCredentialsMatcher
      * @return
      */
@@ -129,6 +139,7 @@ public class ShiroConfig {
 
     /**
      * 启用shiro方言，这样能在页面上使用shiro标签
+     *
      * @return
      */
     @Bean
@@ -138,7 +149,7 @@ public class ShiroConfig {
 
     /**
      * 启用shiro注解
-     *加入注解的使用，不加入这个注解不生效
+     * 加入注解的使用，不加入这个注解不生效
      */
     @Bean
     public AuthorizationAttributeSourceAdvisor getAuthorizationAttributeSourceAdvisor(org.apache.shiro.mgt.SecurityManager securityManager) {

@@ -36,9 +36,10 @@ public class SysRoleController {
 
     /**
      * 列表
+     *
      * @return
      */
-    @ApiOperation(value="角色管理列表",notes="角色管理列表")
+    @ApiOperation(value = "角色管理列表", notes = "角色管理列表")
     @GetMapping("/init")
     public ModelAndView init() {
         return new ModelAndView("page/admin/role/role-list");
@@ -46,19 +47,20 @@ public class SysRoleController {
 
     /**
      * 角色列表查询
+     *
      * @param pageInfo
      * @param form
      * @return
      */
-    @ApiOperation(value="角色列表查询",notes="角色管理查询")
+    @ApiOperation(value = "角色列表查询", notes = "角色管理查询")
     @GetMapping("/page")
     public R page(PageInfo<SysRole> pageInfo, SysRole form) {
         R r = new R();
-        IPage<SysRole> page = new Page<>(pageInfo.getPage(),pageInfo.getLimit());
+        IPage<SysRole> page = new Page<>(pageInfo.getPage(), pageInfo.getLimit());
         //条件构造器
         QueryWrapper<SysRole> wrapper = new QueryWrapper();
-        wrapper.like(StringUtils.isNoneBlank(form.getRoleName()),"role_name", form.getRoleName());
-        wrapper.like(StringUtils.isNoneBlank(form.getRoleCode()),"role_code", form.getRoleCode());
+        wrapper.like(StringUtils.isNoneBlank(form.getRoleName()), "role_name", form.getRoleName());
+        wrapper.like(StringUtils.isNoneBlank(form.getRoleCode()), "role_code", form.getRoleCode());
         wrapper.orderByDesc("create_time");
         sysRoleService.page(page, wrapper);
         return r.successPage(page.getTotal(), page.getRecords());
@@ -66,13 +68,14 @@ public class SysRoleController {
 
     /**
      * 新增角色页面
+     *
      * @return
      */
-    @ApiOperation(value="新增角色页面",notes="新增角色页面")
+    @ApiOperation(value = "新增角色页面", notes = "新增角色页面")
     @GetMapping("/info")
     public ModelAndView add(Integer id) {
         ModelAndView modelAndView = new ModelAndView("page/admin/role/role-info");
-        if(id != null) {
+        if (id != null) {
             SysRole sysRole = sysRoleService.getById(id);
             modelAndView.addObject(sysRole);
         }
@@ -82,13 +85,14 @@ public class SysRoleController {
 
     /**
      * 保存
+     *
      * @param sysRole
      * @return
      */
-    @ApiOperation(value="新增角色",notes="新增角色")
+    @ApiOperation(value = "新增角色", notes = "新增角色")
     @PostMapping("/add")
     public R add(SysRole sysRole, String menuIds) {
-        if(sysRole == null) {
+        if (sysRole == null) {
             return R.error("获取角色信息失败!");
         }
         sysRole.setDelFlag(CommonConstants.STATUS_NORMAL);
@@ -100,17 +104,18 @@ public class SysRoleController {
 
     /**
      * 更新
+     *
      * @param sysRole
      * @return
      */
-    @ApiOperation(value="修改角色",notes="修改角色")
+    @ApiOperation(value = "修改角色", notes = "修改角色")
     @PostMapping("/update")
     public R update(SysRole sysRole, String menuIds) {
-        if(sysRole == null || sysRole.getId() == null) {
+        if (sysRole == null || sysRole.getId() == null) {
             return R.error("获取角色信息失败!");
         }
         SysRole info = sysRoleService.getById(sysRole.getId());
-        if(info == null) {
+        if (info == null) {
             return R.error("本系统不存在该角色信息!");
         }
         info.setRoleName(sysRole.getRoleName());
@@ -123,14 +128,15 @@ public class SysRoleController {
 
     /**
      * 删除角色
+     *
      * @param id
      * @return
      */
-    @ApiOperation(value="删除角色",notes="删除角色")
+    @ApiOperation(value = "删除角色", notes = "删除角色")
     @PostMapping("/delete/{id}")
     public R delete(@PathVariable Integer id) {
         SysRole info = sysRoleService.getById(id);
-        if(info == null) {
+        if (info == null) {
             return R.error("本系统不存在该角色信息!");
         }
         info.setDelFlag(CommonConstants.STATUS_DEL);
@@ -140,13 +146,14 @@ public class SysRoleController {
 
     /**
      * 批量删除角色
+     *
      * @param ids
      * @return
      */
-    @ApiOperation(value="批量删除角色",notes="批量删除角色")
+    @ApiOperation(value = "批量删除角色", notes = "批量删除角色")
     @PostMapping("/delete")
     public R delete(String ids) {
-        if(StringUtils.isBlank(ids)) {
+        if (StringUtils.isBlank(ids)) {
             return R.error("角色信息不能为空");
         }
         sysRoleService.batchDelete(ids);

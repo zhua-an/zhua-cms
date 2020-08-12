@@ -17,24 +17,31 @@ public class TitleVo {
     public String getTitle() {
         return title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
+
     public String getParenttitle() {
         return parenttitle;
     }
+
     public void setParenttitle(String parenttitle) {
         this.parenttitle = parenttitle;
     }
+
     public boolean isMsg() {
         return isMsg;
     }
+
     public void setMsg(boolean isMsg) {
         this.isMsg = isMsg;
     }
+
     public String getMsgHtml() {
         return msgHtml;
     }
+
     public void setMsgHtml(String msgHtml) {
         this.msgHtml = msgHtml;
     }
@@ -42,12 +49,13 @@ public class TitleVo {
 
     /**
      * 设置通用标题
-     * @param title 标题
+     *
+     * @param title       标题
      * @param parenttitle 父标题
-     * @param isMsg 是否开启内容
-     * @param msgHtml 内容html
-     * @param isControl 是否开启小控件
-     * @param isribbon 是都开启彩带
+     * @param isMsg       是否开启内容
+     * @param msgHtml     内容html
+     * @param isControl   是否开启小控件
+     * @param isribbon    是都开启彩带
      * @ClassName: TitleVo
      * @author fuce
      * @date 2018年8月26日
@@ -58,9 +66,9 @@ public class TitleVo {
         this.title = title;
         this.parenttitle = parenttitle;
         this.isMsg = isMsg;
-        if(isMsg==true){
+        if (isMsg == true) {
             this.msgHtml = msgHtml;
-        }else{
+        } else {
             this.msgHtml = "";
         }
     }

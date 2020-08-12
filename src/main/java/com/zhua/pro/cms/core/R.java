@@ -4,53 +4,47 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
-* @ClassName: AjaxResult
-* @Description: TODO(ajax操作消息提醒)
-* @author zhua
-* @date
-*
+ * @author zhua
+ * @ClassName: AjaxResult
+ * @Description: TODO(ajax操作消息提醒)
+ * @date
  */
-public class R extends HashMap<String, Object>
-{
+public class R extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
 
     /**
      * 初始化一个新创建的 Message 对象
      */
-    public R()
-    {
+    public R() {
     }
 
     /**
      * 返回错误消息
-     * 
+     *
      * @return 错误消息
      */
-    public static R error()
-    {
+    public static R error() {
         return error(1, "操作失败");
     }
 
     /**
      * 返回错误消息
-     * 
+     *
      * @param msg 内容
      * @return 错误消息
      */
-    public static R error(String msg)
-    {
+    public static R error(String msg) {
         return error(500, msg);
     }
 
     /**
      * 返回错误消息
-     * 
+     *
      * @param code 错误码
-     * @param msg 内容
+     * @param msg  内容
      * @return 错误消息
      */
-    public static R error(int code, String msg)
-    {
+    public static R error(int code, String msg) {
         R json = new R();
         json.put("success", false);
         json.put("code", code);
@@ -60,35 +54,33 @@ public class R extends HashMap<String, Object>
 
     /**
      * 返回成功消息
-     * 
+     *
      * @param msg 内容
      * @return 成功消息
      */
-    public static R success(String msg)
-    {
+    public static R success(String msg) {
         R json = new R();
         json.put("success", true);
         json.put("msg", msg);
         json.put("code", 200);
         return json;
     }
-    
+
     /**
      * 返回成功消息
-     * 
+     *
      * @return 成功消息
      */
-    public static R success()
-    {
+    public static R success() {
         return R.success("操作成功");
     }
-    
-    public static R successData(int code, Object value){
-    	 R json = new R();
-    	 json.put("success", true);
-    	 json.put("code", code);
-         json.put("data", value);
-         return json;
+
+    public static R successData(int code, Object value) {
+        R json = new R();
+        json.put("success", true);
+        json.put("code", code);
+        json.put("data", value);
+        return json;
     }
 
     public static R successPage(long count, List rows) {
@@ -99,17 +91,16 @@ public class R extends HashMap<String, Object>
         json.put("data", rows);
         return json;
     }
-    
+
     /**
      * 返回成功消息
-     * 
-     * @param key 键值
+     *
+     * @param key   键值
      * @param value 内容
      * @return 成功消息
      */
     @Override
-    public R put(String key, Object value)
-    {
+    public R put(String key, Object value) {
         super.put(key, value);
         return this;
     }

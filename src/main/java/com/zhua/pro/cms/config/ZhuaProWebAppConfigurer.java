@@ -14,7 +14,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class ZhuaProWebAppConfigurer implements WebMvcConfigurer {
 
-    /** 静态资源处理 **/
+    /**
+     * 静态资源处理
+     **/
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //配置虚拟路径为项目得static下面

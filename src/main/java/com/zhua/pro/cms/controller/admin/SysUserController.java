@@ -9,6 +9,7 @@ import com.zhua.pro.cms.core.PageInfo;
 import com.zhua.pro.cms.core.R;
 import com.zhua.pro.cms.entity.SysUser;
 import com.zhua.pro.cms.service.ISysUserService;
+import com.zhua.pro.cms.shiro.util.ShiroUtils;
 import com.zhua.pro.cms.util.StringUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -30,14 +31,15 @@ import java.time.LocalDateTime;
 @RequestMapping("/sysUser")
 @AllArgsConstructor
 public class SysUserController {
-    
+
     private ISysUserService sysUserService;
 
     /**
      * 列表
+     *
      * @return
      */
-    @ApiOperation(value="用户管理列表",notes="用户管理列表")
+    @ApiOperation(value = "用户管理列表", notes = "用户管理列表")
     @GetMapping("/init")
     public ModelAndView init() {
         return new ModelAndView("page/admin/user/user-list");
@@ -45,19 +47,20 @@ public class SysUserController {
 
     /**
      * 用户列表查询
+     *
      * @param pageInfo
      * @param form
      * @return
      */
-    @ApiOperation(value="用户列表查询",notes="用户管理查询")
+    @ApiOperation(value = "用户列表查询", notes = "用户管理查询")
     @GetMapping("/page")
     public R page(PageInfo<SysUser> pageInfo, SysUser form) {
         R r = new R();
-        IPage<SysUser> page = new Page<>(pageInfo.getPage(),pageInfo.getLimit());
+        IPage<SysUser> page = new Page<>(pageInfo.getPage(), pageInfo.getLimit());
         //条件构造器
         QueryWrapper<SysUser> wrapper = new QueryWrapper();
-        wrapper.like(StringUtils.isNoneBlank(form.getUsername()),"username", form.getUsername());
-        wrapper.like(StringUtils.isNoneBlank(form.getName()),"name", form.getName());
+        wrapper.like(StringUtils.isNoneBlank(form.getUsername()), "username", form.getUsername());
+        wrapper.like(StringUtils.isNoneBlank(form.getName()), "name", form.getName());
         wrapper.orderByDesc("create_time");
         sysUserService.page(page, wrapper);
         return r.successPage(page.getTotal(), page.getRecords());
@@ -65,13 +68,14 @@ public class SysUserController {
 
     /**
      * 新增用户页面
+     *
      * @return
      */
-    @ApiOperation(value="新增用户页面",notes="新增用户页面")
+    @ApiOperation(value = "新增用户页面", notes = "新增用户页面")
     @GetMapping("/info")
     public ModelAndView add(Integer id) {
         ModelAndView modelAndView = new ModelAndView("page/admin/user/user-info");
-        if(id != null) {
+        if (id != null) {
             SysUser sysUser = sysUserService.getById(id);
             modelAndView.addObject(sysUser);
         }
@@ -80,13 +84,14 @@ public class SysUserController {
 
     /**
      * 保存
+     *
      * @param sysUser
      * @return
      */
-    @ApiOperation(value="新增用户",notes="新增用户")
+    @ApiOperation(value = "新增用户", notes = "新增用户")
     @PostMapping("/add")
     public R add(SysUser sysUser) {
-        if(sysUser == null) {
+        if (sysUser == null) {
             return R.error("获取用户信息失败!");
         }
         sysUser.setPassword(CommonConstants.DUFAULT_PASSWORD);
@@ -100,17 +105,18 @@ public class SysUserController {
 
     /**
      * 更新
+     *
      * @param sysUser
      * @return
      */
-    @ApiOperation(value="修改用户",notes="修改用户")
+    @ApiOperation(value = "修改用户", notes = "修改用户")
     @PostMapping("/update")
     public R update(SysUser sysUser) {
-        if(sysUser == null || sysUser.getId() == null) {
+        if (sysUser == null || sysUser.getId() == null) {
             return R.error("获取用户信息失败!");
         }
         SysUser info = sysUserService.getById(sysUser.getId());
-        if(info == null) {
+        if (info == null) {
             return R.error("本系统不存在该用户信息!");
         }
         BeanUtils.copyProperties(sysUser, info);
@@ -121,14 +127,15 @@ public class SysUserController {
 
     /**
      * 删除用户
+     *
      * @param id
      * @return
      */
-    @ApiOperation(value="删除用户",notes="删除用户")
+    @ApiOperation(value = "删除用户", notes = "删除用户")
     @PostMapping("/delete/{id}")
     public R delete(@PathVariable Integer id) {
         SysUser info = sysUserService.getById(id);
-        if(info == null) {
+        if (info == null) {
             return R.error("本系统不存在该用户信息!");
         }
         info.setDelFlag(CommonConstants.STATUS_DEL);
@@ -138,11 +145,13 @@ public class SysUserController {
 
     /**
      * 基本资料设置
+     *
      * @return
      */
     @GetMapping("/userSetting")
     public ModelAndView setting() {
-        ModelAndView modelAndView = new ModelAndView("page/admin/system/user/user-setting");
+        ModelAndView modelAndView = new ModelAndView("page/admin/user/user-setting");
+        modelAndView.addObject("user", ShiroUtils.getUser());
         return modelAndView;
     }
 }

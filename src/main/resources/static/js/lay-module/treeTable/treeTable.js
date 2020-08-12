@@ -860,7 +860,7 @@ layui.define(['laytpl', 'form', 'util'], function (exports) {
      * @returns {string}
      */
     TreeTable.prototype.renderBodyTd = function (d, indent, index, $td, col) {
-        if (!col||col.colGroup) return '';
+        if (!col || col.colGroup) return '';
         var options = this.options;
         var components = this.getComponents();
         if (!indent) indent = 0;

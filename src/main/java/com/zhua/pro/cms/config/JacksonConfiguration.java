@@ -35,51 +35,51 @@ import java.util.TimeZone;
 @AutoConfigureBefore(JacksonAutoConfiguration.class)
 public class JacksonConfiguration {
 
-	/**
-	 * Date格式化字符串
-	 */
-	private static final String DATE_FORMAT = "yyyy-MM-dd";
-	/**
-	 * DateTime格式化字符串
-	 */
-	private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	/**
-	 * Time格式化字符串
-	 */
-	private static final String TIME_FORMAT = "HH:mm:ss";
+    /**
+     * Date格式化字符串
+     */
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    /**
+     * DateTime格式化字符串
+     */
+    private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    /**
+     * Time格式化字符串
+     */
+    private static final String TIME_FORMAT = "HH:mm:ss";
 
-	@Bean
-	public Jackson2ObjectMapperBuilderCustomizer customizer() {
-		return builder -> {
-			builder.locale(Locale.CHINA);
-			builder.timeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
-			builder.simpleDateFormat(DatePattern.NORM_DATETIME_PATTERN);
-			builder.serializerByType(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DATETIME_FORMAT)))
-					.serializerByType(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-					.serializerByType(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(TIME_FORMAT)))
-					.deserializerByType(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DATETIME_FORMAT)))
-					.deserializerByType(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-					.deserializerByType(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(TIME_FORMAT)));
-		};
-	}
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer customizer() {
+        return builder -> {
+            builder.locale(Locale.CHINA);
+            builder.timeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
+            builder.simpleDateFormat(DatePattern.NORM_DATETIME_PATTERN);
+            builder.serializerByType(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DATETIME_FORMAT)))
+                    .serializerByType(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DATE_FORMAT)))
+                    .serializerByType(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(TIME_FORMAT)))
+                    .deserializerByType(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DATETIME_FORMAT)))
+                    .deserializerByType(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DATE_FORMAT)))
+                    .deserializerByType(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(TIME_FORMAT)));
+        };
+    }
 
-	@Bean
-	public Converter<String, LocalDate> localDateConvert() {
-		return new Converter<String, LocalDate>() {
-			@Override
-			public LocalDate convert(String source) {
-				return LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.CHINA));
-			}
-		};
-	}
+    @Bean
+    public Converter<String, LocalDate> localDateConvert() {
+        return new Converter<String, LocalDate>() {
+            @Override
+            public LocalDate convert(String source) {
+                return LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.CHINA));
+            }
+        };
+    }
 
-	@Bean
-	public Converter<String, LocalDateTime> localDateTimeConvert() {
-		return new Converter<String, LocalDateTime>() {
-			@Override
-			public LocalDateTime convert(String source) {
-				return LocalDateTime.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.CHINA));
-			}
-		};
-	}
+    @Bean
+    public Converter<String, LocalDateTime> localDateTimeConvert() {
+        return new Converter<String, LocalDateTime>() {
+            @Override
+            public LocalDateTime convert(String source) {
+                return LocalDateTime.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.CHINA));
+            }
+        };
+    }
 }

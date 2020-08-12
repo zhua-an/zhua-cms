@@ -15,25 +15,28 @@
     <div class="layui-form-item">
         <label class="layui-form-label required">角色名称</label>
         <div class="layui-input-block">
-            <input type="text" name="roleName" lay-verify="required" lay-reqtext="角色名称不能为空" placeholder="请输入角色名称" th:value="${sysRole?.roleName}" class="layui-input">
+            <input type="text" name="roleName" lay-verify="required" lay-reqtext="角色名称不能为空" placeholder="请输入角色名称"
+                   th:value="${sysRole?.roleName}" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label required">角色代码</label>
         <div class="layui-input-block">
-            <input type="text" name="roleCode" lay-verify="required" lay-reqtext="角色代码不能为空" placeholder="请输入角色代码" th:value="${sysRole?.roleCode}" class="layui-input">
+            <input type="text" name="roleCode" lay-verify="required" lay-reqtext="角色代码不能为空" placeholder="请输入角色代码"
+                   th:value="${sysRole?.roleCode}" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label required">权限配置</label>
         <div class="layui-input-block">
-            <div id="tree"data-id="-1"></div>
+            <div id="tree" data-id="-1"></div>
         </div>
     </div>
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">角色描述</label>
         <div class="layui-input-block">
-            <textarea name="roleDesc" class="layui-textarea" placeholder="请输入角色描述信息" th:text="${sysRole?.roleDesc}"></textarea>
+            <textarea name="roleDesc" class="layui-textarea" placeholder="请输入角色描述信息"
+                      th:text="${sysRole?.roleDesc}"></textarea>
         </div>
     </div>
 
@@ -46,7 +49,7 @@
 <script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
 <script th:src="@{/static/js/lay-config.js}" charset="utf-8"></script>
 <script th:inline="javascript">
-    layui.use(['jquery','form', 'eleTree'], function () {
+    layui.use(['jquery', 'form', 'eleTree'], function () {
         var form = layui.form,
             layer = layui.layer,
             eleTree = layui.eleTree,
@@ -58,7 +61,7 @@
             renderAfterExpand: false,
             expandOnClickNode: true,
             showCheckbox: true,
-            done: function() {
+            done: function () {
 
             }
         });
@@ -67,33 +70,33 @@
         form.on('submit(saveBtn)', function (data) {
             var param = data.field;
             var action = "add";
-            if(param.id) {
+            if (param.id) {
                 action = "update";
             }
             var treeData = eltree.getChecked(false, true);
-            if(treeData) {
+            if (treeData) {
                 var checkIds = [];
-                for(var i = 0; i<treeData.length; i++) {
+                for (var i = 0; i < treeData.length; i++) {
                     checkIds.push(treeData[i].id);
                 }
                 param.menuIds = checkIds.join(",");
             }
             $.ajax({
-                type : "POST",
-                url : action,
+                type: "POST",
+                url: action,
                 data: param,
-                error : function(request) {
+                error: function (request) {
                     layer.msg('系统错误', {icon: 7});
                 },
-                success : function(res) {
-                    if(res.code==200){
+                success: function (res) {
+                    if (res.code == 200) {
                         layer.msg(res.msg, {icon: 1}, function () {
                             //查询
                             parent.layui.jquery("button[lay-filter='data-search-btn']").click();
                             var iframeIndex = parent.layer.getFrameIndex(window.name);
                             parent.layer.close(iframeIndex);
                         });
-                    }else{
+                    } else {
                         layer.msg(res.msg, {icon: 7});
                     }
                 }

@@ -5,41 +5,71 @@ import org.springframework.stereotype.Component;
 
 /**
  * 读取项目相关配置
- * 
+ *
  * @author zhua
  */
 @Component
 @ConfigurationProperties(prefix = "zhua.pro")
 public class ZhuaProConfig {
-    /** 项目名称 */
+    /**
+     * 项目名称
+     */
     private String name;
-    /** 正标题 */
-	private String title;
-	/** 是都添加欢迎语 默认为false */
-	private boolean isMsg;
-	/** 欢迎语内容 默认内容为"" */
-	private String msgHtml;
-    /** 版本 */
+    /**
+     * 正标题
+     */
+    private String title;
+    /**
+     * 是都添加欢迎语 默认为false
+     */
+    private boolean isMsg;
+    /**
+     * 欢迎语内容 默认内容为""
+     */
+    private String msgHtml;
+    /**
+     * 版本
+     */
     private String version;
-    /** 版权年份 */
+    /**
+     * 版权年份
+     */
     private String copyrightYear;
-    /** 默认上传的地址 */
+    /**
+     * 默认上传的地址
+     */
     private static String defaultBaseDir;
-    /** 是否开启 上传static **/
+    /**
+     * 是否开启 上传static
+     **/
     private static String isstatic;
-    /** 开启存放静态文件夹后目录 **/
+    /**
+     * 开启存放静态文件夹后目录
+     **/
     private static String isroot_dir;
-    /** 邮箱发送smtp */
+    /**
+     * 邮箱发送smtp
+     */
     private static String email_smtp;
-    /** 发送邮箱端口 */
+    /**
+     * 发送邮箱端口
+     */
     private static String email_port;
-    /** 发送邮箱登录账号 */
+    /**
+     * 发送邮箱登录账号
+     */
     private static String email_account;
-    /** 发送邮箱登录密码 */
+    /**
+     * 发送邮箱登录密码
+     */
     private static String email_password;
-    /** 演示模式 **/
+    /**
+     * 演示模式
+     **/
     private static String demoEnabled;
-    /** 滚动验证码 **/
+    /**
+     * 滚动验证码
+     **/
     private static Boolean rollVerification;
 
 
@@ -95,7 +125,7 @@ public class ZhuaProConfig {
         return defaultBaseDir;
     }
 
-    public  void setDefaultBaseDir(String defaultBaseDir) {
+    public void setDefaultBaseDir(String defaultBaseDir) {
         ZhuaProConfig.defaultBaseDir = defaultBaseDir;
     }
 
@@ -103,7 +133,7 @@ public class ZhuaProConfig {
         return isstatic;
     }
 
-    public  void setIsstatic(String isstatic) {
+    public void setIsstatic(String isstatic) {
         ZhuaProConfig.isstatic = isstatic;
     }
 
@@ -111,7 +141,7 @@ public class ZhuaProConfig {
         return isroot_dir;
     }
 
-    public  void setIsroot_dir(String isroot_dir) {
+    public void setIsroot_dir(String isroot_dir) {
         ZhuaProConfig.isroot_dir = isroot_dir;
     }
 
@@ -119,7 +149,7 @@ public class ZhuaProConfig {
         return email_smtp;
     }
 
-    public  void setEmail_smtp(String email_smtp) {
+    public void setEmail_smtp(String email_smtp) {
         ZhuaProConfig.email_smtp = email_smtp;
     }
 
@@ -127,7 +157,7 @@ public class ZhuaProConfig {
         return email_port;
     }
 
-    public  void setEmail_port(String email_port) {
+    public void setEmail_port(String email_port) {
         ZhuaProConfig.email_port = email_port;
     }
 
@@ -135,7 +165,7 @@ public class ZhuaProConfig {
         return email_account;
     }
 
-    public  void setEmail_account(String email_account) {
+    public void setEmail_account(String email_account) {
         ZhuaProConfig.email_account = email_account;
     }
 
@@ -143,7 +173,7 @@ public class ZhuaProConfig {
         return email_password;
     }
 
-    public  void setEmail_password(String email_password) {
+    public void setEmail_password(String email_password) {
         ZhuaProConfig.email_password = email_password;
     }
 
@@ -151,7 +181,7 @@ public class ZhuaProConfig {
         return demoEnabled;
     }
 
-    public  void setDemoEnabled(String demoEnabled) {
+    public void setDemoEnabled(String demoEnabled) {
         ZhuaProConfig.demoEnabled = demoEnabled;
     }
 

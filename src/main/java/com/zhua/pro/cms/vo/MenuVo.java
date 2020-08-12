@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MenuVo extends TreeVo{
+public class MenuVo extends TreeVo {
 
     private Integer pid;
 

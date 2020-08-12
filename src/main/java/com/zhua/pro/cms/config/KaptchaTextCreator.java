@@ -13,7 +13,7 @@ import java.util.Random;
  * @Version 1.0
  */
 public class KaptchaTextCreator extends DefaultTextCreator {
-    private static final String[] CNUMBERS = {"0","1","2","3","4","5","6","7","8","9","10"};
+    private static final String[] CNUMBERS = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
     @Override
     public String getText() {
@@ -28,8 +28,7 @@ public class KaptchaTextCreator extends DefaultTextCreator {
             suChinese.append(CNUMBERS[x]);
             suChinese.append("*");
             suChinese.append(CNUMBERS[y]);
-        }
-        else if (randomoperands == 1) {
+        } else if (randomoperands == 1) {
             if (!(x == 0) && y % x == 0) {
                 result = y / x;
                 suChinese.append(CNUMBERS[y]);

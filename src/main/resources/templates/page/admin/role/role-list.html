@@ -27,7 +27,9 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -37,9 +39,9 @@
         <script type="text/html" id="tableToolbar">
             <div class="layui-btn-container">
                 <shiro:hasPermission name="sys_role_add">
-                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+                    <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加</button>
                 </shiro:hasPermission>
-                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除</button>
             </div>
         </script>
 
@@ -47,10 +49,10 @@
 
         <script type="text/html" id="currentTableBar">
             <shiro:hasPermission name="sys_role_edit">
-            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
             </shiro:hasPermission>
             <shiro:hasPermission name="sys_role_del">
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
             </shiro:hasPermission>
         </script>
 
@@ -117,7 +119,7 @@
                     title: '添加',
                     type: 2,
                     shade: 0.2,
-                    maxmin:true,
+                    maxmin: true,
                     shadeClose: true,
                     area: ['800px', '600px'],
                     content: '/sysRole/info',
@@ -128,29 +130,29 @@
             } else if (obj.event === 'delete') {  // 监听删除操作
                 var checkStatus = table.checkStatus('currentTableId')
                     , data = checkStatus.data;
-                if(data.length == 0) {
+                if (data.length == 0) {
                     layer.msg('请选择要删除的数据', {icon: 7});
                     return;
                 }
 
                 var idArr = [];
-                for(var i = 0; i < data.length; i++) {
+                for (var i = 0; i < data.length; i++) {
                     idArr.push(data.id);
                 }
                 $.ajax({
-                    type : "POST",
-                    url : "/sysRole/delete",
+                    type: "POST",
+                    url: "/sysRole/delete",
                     data: idArr.join(","),
-                    error : function(request) {
+                    error: function (request) {
                         layer.msg('系统错误', {icon: 7});
                     },
-                    success : function(res) {
-                        if(res.code==200){
+                    success: function (res) {
+                        if (res.code == 200) {
                             layer.msg(res.msg, {icon: 1}, function () {
                                 //查询
                                 $("button[lay-filter='data-search-btn']").click();
                             });
-                        }else{
+                        } else {
                             layer.msg(res.msg, {icon: 7});
                         }
                     }
@@ -170,10 +172,10 @@
                     title: '编辑',
                     type: 2,
                     shade: 0.2,
-                    maxmin:true,
+                    maxmin: true,
                     shadeClose: true,
                     area: ['800px', '600px'],
-                    content: '/sysRole/info?id='+data.id,
+                    content: '/sysRole/info?id=' + data.id,
                 });
                 // $(window).on("resize", function () {
                 //     layer.full(index);
@@ -181,20 +183,20 @@
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('真的删除行么', function (index) {
-                    if(index) {
+                    if (index) {
                         $.ajax({
-                            type : "POST",
-                            url : "/sysRole/delete/"+ data.id,
-                            error : function(request) {
+                            type: "POST",
+                            url: "/sysRole/delete/" + data.id,
+                            error: function (request) {
                                 layer.msg('系统错误', {icon: 7});
                             },
-                            success : function(res) {
-                                if(res.code==200){
+                            success: function (res) {
+                                if (res.code == 200) {
                                     layer.msg(res.msg, {icon: 1}, function () {
                                         //查询
                                         $("button[lay-filter='data-search-btn']").click();
                                     });
-                                }else{
+                                } else {
                                     layer.msg(res.msg, {icon: 7});
                                 }
                             }
@@ -208,9 +210,9 @@
     });
 
     function delFlagTemplet(d) {
-        if(d.delFlag == '1') {
+        if (d.delFlag == '1') {
             return '<button type="button" class="layui-btn layui-btn-sm layui-btn-danger">已删除</button>';
-        }else {
+        } else {
             return '未删除';
         }
     }

@@ -24,6 +24,7 @@ public class TreeUtil {
         }
         return retList;
     }
+
     private static MenuVo findChildren(MenuVo parent, List<MenuVo> treeList) {
         for (MenuVo child : treeList) {
             if (parent.getId().equals(child.getPid())) {
@@ -46,6 +47,7 @@ public class TreeUtil {
         }
         return retList;
     }
+
     private static TreeVo findChildren(TreeVo parent, List<TreeVo> treeList) {
         for (TreeVo child : treeList) {
             if (parent.getId().equals(child.getParentId())) {

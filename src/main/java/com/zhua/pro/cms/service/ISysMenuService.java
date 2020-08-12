@@ -18,12 +18,14 @@ public interface ISysMenuService extends IService<SysMenu> {
 
     /**
      * 获取菜单
+     *
      * @return
      */
     Map<String, Object> menu();
 
     /**
      * 获取当前登录用户所有菜单id
+     *
      * @param userId
      * @return
      */

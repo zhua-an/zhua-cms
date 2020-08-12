@@ -1,35 +1,41 @@
 /* #region tree */
-.eleTree{
+.eleTree {
     position: relative;
 }
+
 .eleTree-hide,
-.eleTree-search-hide{
+.eleTree-search-hide {
     display: none;
 }
-.eleTree-loadData{
+
+.eleTree-loadData {
     width: 100%;
     height: 100%;
     position: absolute;
     z-index: 1;
     top: 0px;
 }
-.eleTree-loadData .layui-icon{
+
+.eleTree-loadData .layui-icon {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translateX(-50%)  translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
 }
-.eleTree-node-content{
+
+.eleTree-node-content {
     cursor: pointer;
     height: 26px;
     line-height: 1.3;
     white-space: nowrap;
 }
+
 .eleTree-node-content:hover,
-.eleTree-node-content.eleTree-node-content-active{
+.eleTree-node-content.eleTree-node-content-active {
     background-color: #eee;
 }
-.eleTree-node-content-icon .layui-icon{
+
+.eleTree-node-content-icon .layui-icon {
     padding: 6px 3px;
     color: #c0c4cc;
     font-size: 12px;
@@ -37,18 +43,22 @@
     transform: rotate(0deg);
     transition: transform .3s ease-in-out;
 }
-.eleTree-node-content-icon .layui-icon.icon-rotate{
+
+.eleTree-node-content-icon .layui-icon.icon-rotate {
     transform: rotate(90deg);
 }
-.eleTree-node-content .layui-form-checkbox[lay-skin=primary] i{
+
+.eleTree-node-content .layui-form-checkbox[lay-skin=primary] i {
     width: 13px;
     height: 14px;
     line-height: 1.3;
 }
-.eleTree-node-content-label{
+
+.eleTree-node-content-label {
     padding-left: 5px;
 }
-.eleTree-node-content-input{
+
+.eleTree-node-content-input {
     width: 80px;
     border: 1px solid #e6e6e6;
     outline: 0;
@@ -57,17 +67,19 @@
 }
 
 /* 线条样式 */
-.eleTree-node{
+.eleTree-node {
     position: relative;
 }
-.eleTree-node .eleTree-node-verticalline{
+
+.eleTree-node .eleTree-node-verticalline {
     position: absolute;
     width: 0;
     height: 100%;
     border: 1px dotted #ccc;
     z-index: 1;
 }
-.eleTree-node .eleTree-node-horizontalline{
+
+.eleTree-node .eleTree-node-horizontalline {
     position: absolute;
     height: 0;
     top: 13px;
@@ -76,19 +88,21 @@
 }
 
 /* checkbox第三种状态 */
-input.eleTree-hideen[type=checkbox]{
+input.eleTree-hideen[type=checkbox] {
     display: none;
 }
+
 .eleTree-checkbox {
-    height: auto!important;
-    line-height: normal!important;
+    height: auto !important;
+    line-height: normal !important;
     min-height: 12px;
-    border: none!important;
+    border: none !important;
     margin-right: 0;
     padding-left: 18px;
     position: relative;
     display: inline-block;
 }
+
 .eleTree-checkbox i {
     left: 0;
     border: 1px solid #d2d2d2;
@@ -106,15 +120,18 @@ input.eleTree-hideen[type=checkbox]{
     height: 14px;
     line-height: 1.3;
 }
+
 .eleTree-checkbox i:hover {
     border-color: #5FB878;
 }
+
 .eleTree-checkbox-checked i {
     border-color: #5FB878;
     background-color: #5FB878;
     color: #fff;
 }
-.eleTree-checkbox-line:after{
+
+.eleTree-checkbox-line:after {
     content: "";
     position: relative;
     width: 8px;
@@ -124,20 +141,22 @@ input.eleTree-hideen[type=checkbox]{
     top: -4px;
 }
 
-.eleTree-checkbox.eleTree-checkbox-disabled i{
+.eleTree-checkbox.eleTree-checkbox-disabled i {
     cursor: not-allowed;
     background-color: #f2f6fc;
     border-color: #dcdfe6;
     color: #c2c2c2;
 }
-.eleTree-checkbox.eleTree-checkbox-disabled i.eleTree-checkbox-line:after{
+
+.eleTree-checkbox.eleTree-checkbox-disabled i.eleTree-checkbox-line:after {
     background-color: #c2c2c2;
 }
-.eleTree-checkbox.eleTree-checkbox-disabled i:hover{
+
+.eleTree-checkbox.eleTree-checkbox-disabled i:hover {
     border-color: #dcdfe6;
 }
 
-#tree-menu{
+#tree-menu {
     margin: 0;
     padding: 2px;
     position: absolute;
@@ -147,7 +166,8 @@ input.eleTree-hideen[type=checkbox]{
     display: none;
     z-index: 20181205;
 }
-#tree-menu li>a{
+
+#tree-menu li > a {
     display: block;
     padding: 0 1em;
     text-decoration: none;
@@ -158,11 +178,14 @@ input.eleTree-hideen[type=checkbox]{
     text-shadow: 1px 1px 0 #fff;
     border-radius: 1px;
 }
-#tree-menu li>a:hover{
+
+#tree-menu li > a:hover {
     background-color: #e8eff7;
     box-shadow: 0 0 2px #0a6aa1;
 }
-.tree-menu-bg{
+
+.tree-menu-bg {
     background-color: #ccc;
 }
+
 /* #endregion */

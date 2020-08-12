@@ -27,6 +27,7 @@ public class SwaggerController extends BaseController {
 
     /**
      * 展示页面
+     *
      * @param model
      * @return
      */
@@ -34,8 +35,8 @@ public class SwaggerController extends BaseController {
     @GetMapping("/view")
     @RequiresPermissions("sys_swagger_view")
     public ModelAndView view(ModelMap model) {
-        String str="API文档";
-        setTitle(model, new TitleVo("列表", str+"管理", true,"欢迎进入"+str+"页面", true, false));
+        String str = "API文档";
+        setTitle(model, new TitleVo("列表", str + "管理", true, "欢迎进入" + str + "页面", true, false));
         return new ModelAndView(prefix + "/list");
     }
 

@@ -15,21 +15,25 @@
     <div class="layui-form-item">
         <label class="layui-form-label required">用户名</label>
         <div class="layui-input-inline">
-            <input type="text" name="username" lay-verify="required" lay-reqtext="用户名不能为空" placeholder="请输入用户名" th:value="${sysUser?.username}" class="layui-input">
+            <input type="text" name="username" lay-verify="required" lay-reqtext="用户名不能为空" placeholder="请输入用户名"
+                   th:value="${sysUser?.username}" class="layui-input">
         </div>
         <label class="layui-form-label required">用户姓名</label>
         <div class="layui-input-inline">
-            <input type="text" name="name" lay-verify="required" lay-reqtext="用户姓名不能为空" placeholder="请输入用户姓名" th:value="${sysUser?.name}" class="layui-input">
+            <input type="text" name="name" lay-verify="required" lay-reqtext="用户姓名不能为空" placeholder="请输入用户姓名"
+                   th:value="${sysUser?.name}" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">手机号</label>
         <div class="layui-input-inline">
-            <input type="text" name="phone" lay-reqtext="手机号格式不正确" placeholder="请输入手机号" th:value="${sysUser?.phone}" class="layui-input">
+            <input type="text" name="phone" lay-reqtext="手机号格式不正确" placeholder="请输入手机号" th:value="${sysUser?.phone}"
+                   class="layui-input">
         </div>
         <label class="layui-form-label required">邮箱</label>
         <div class="layui-input-inline">
-            <input type="text" name="email" lay-verify="required|email" lay-reqtext="邮箱格式不正确" placeholder="请输入邮箱" th:value="${sysUser?.email}" class="layui-input">
+            <input type="text" name="email" lay-verify="required|email" lay-reqtext="邮箱格式不正确" placeholder="请输入邮箱"
+                   th:value="${sysUser?.email}" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -47,7 +51,8 @@
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">个人介绍</label>
         <div class="layui-input-block">
-            <textarea name="introduction" class="layui-textarea" th:text="${sysUser?.introduction}" placeholder="请输入个人介绍"></textarea>
+            <textarea name="introduction" class="layui-textarea" th:text="${sysUser?.introduction}"
+                      placeholder="请输入个人介绍"></textarea>
         </div>
     </div>
 
@@ -68,25 +73,25 @@
         form.on('submit(saveBtn)', function (data) {
             var param = data.field;
             var action = "add";
-            if(param.id) {
+            if (param.id) {
                 action = "update";
             }
             $.ajax({
-                type : "POST",
-                url : action,
+                type: "POST",
+                url: action,
                 data: param,
-                error : function(request) {
+                error: function (request) {
                     layer.msg('系统错误', {icon: 7});
                 },
-                success : function(res) {
-                    if(res.code==200){
+                success: function (res) {
+                    if (res.code == 200) {
                         layer.msg(res.msg, {icon: 1}, function () {
                             //查询
                             parent.layui.jquery("button[lay-filter='data-search-btn']").click();
                             var iframeIndex = parent.layer.getFrameIndex(window.name);
                             parent.layer.close(iframeIndex);
                         });
-                    }else{
+                    } else {
                         layer.msg(res.msg, {icon: 7});
                     }
                 }
