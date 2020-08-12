@@ -44,13 +44,13 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             //设置标题
-            .title("springboot_v2 API文档")
+            .title("zhua-cms API文档")
             //描述
-            .description("SpringBoot_v2项目是努力打造springboot框架的极致细腻的脚手架")
+            .description("zhua-cms项目是努力打造springboot框架的极致细腻的脚手架")
             //作者信息
             //.contact(new Contact(zhuaProConfig.getName(), null, zhuaProConfig.getEmail_account()))
             //服务条款URL
-            .termsOfServiceUrl("https://gitee.com/bdj/SpringBoot_v2/wikis/")
+            .termsOfServiceUrl("https://github.com/zhua-an/zhua-cms.git")
             //版本
             .version("版本号:"+zhuaProConfig.getVersion())
             .build();
