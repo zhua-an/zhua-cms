@@ -29,3 +29,12 @@ zhua-cms 是基于spring boot + layuimini 开发的后台管理系统，具有�
 
 # 运行截图
 
+![](https://github.com/zhua-an/zhua-cms/blob/master/doc/img/1.png)
+
+![](https://github.com/zhua-an/zhua-cms/blob/master/doc/img/2.png)
+
+![](https://github.com/zhua-an/zhua-cms/blob/master/doc/img/3.png)
+
+![](https://github.com/zhua-an/zhua-cms/blob/master/doc/img/4.png)
+
+![](https://github.com/zhua-an/zhua-cms/blob/master/doc/img/5.png)
