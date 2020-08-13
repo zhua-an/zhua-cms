@@ -1,4 +1,3 @@
-
 server:
   port: 8060
   tomcat:
@@ -36,13 +35,14 @@ spring:
       test-on-return: false
       pool-prepared-statements: true
       max-pool-prepared-statement-per-connection-size: 20
-      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-      filter: stat,wall,log4j
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙 stat,wall,log4j
+      filters: stat,wall
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connect-properties:
         - druid.stat.mergeSql: true
         - druid.stat.slowSqlMillis: 5000
-    type: com.zaxxer.hikari.HikariDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+#    type: com.zaxxer.hikari.HikariDataSource
     hikari:
       minimum-idle: 3
       maximum-pool-size: 10
@@ -69,7 +69,7 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
     #严格执行H5标准
-#    mode: LEGACYHTML5
+    #    mode: LEGACYHTML5
     mode: HTML5
     #指定编码
     encoding: UTF-8
