@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="common/head :: head_Content"/>
+    <style>
+        .layui-form-item .layui-input-company {
+            width: auto;
+            padding-right: 10px;
+            line-height: 38px;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-form layuimini-form">
+            <!-- 流程流转核心字段值 -->
+            <div class="layui-form-item">
+                <!--<input type="hidden" name="theme" th:value="${flowData?.theme}">
+                <input type="hidden" name="processName" th:value="${flowData?.processName}">
+                <input type="hidden" name="processDefinitionId" th:value="${flowData?.processDefinitionId}">
+                <input type="hidden" name="processInstanceId" th:value="${flowData?.processInstanceId}">
+                <input type="hidden" name="executionId" th:value="${flowData?.executionId}">
+                <input type="hidden" name="startUser" th:value="${flowData?.startUser}">
+                <input type="hidden" name="currentUser" th:value="${flowData?.currentUser}">
+                <input type="hidden" name="taskId" th:value="${flowData?.taskId}">
+                <input type="hidden" name="mainFormKey" th:value="${flowData?.mainFormKey}">
+                <input type="hidden" name="formInfoJson" th:value="${flowData?.formInfoJson}">
+                <input type="hidden" name="formKey" th:value="${flowData?.formKey}">
+                <input type="hidden" name="firstNodeId" th:value="${flowData?.firstNodeId}">
+                <input type="hidden" name="currentNodeId" th:value="${flowData?.currentNodeId}">
+                <input type="hidden" name="currentNodeName" th:value="${flowData?.currentNodeName}">
+                <input type="hidden" name="firstNode" th:value="${flowData?.firstNode}">
+                <input type="hidden" name="firstSubmit" th:value="${flowData?.firstSubmit}">
+                <input type="hidden" name="nextNodeNum" th:value="${flowData?.nextNodeNum}">-->
+                <input type="hidden" name="taskId" th:value="${flowData?.taskId}">
+                <input type="hidden" name="outcome" value="">
+            </div>
+            <div th:if="${!isFirstNode}">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend>流程信息</legend>
+                </fieldset>
+                <div class="layui-container">
+                    <div class="layui-row">
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2">申请人</div>
+                            <div class="layui-col-xs8" th:text="${formConfig?.applyName}"></div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2">申请时间</div>
+                            <div class="layui-col-xs8"
+                                 th:text="${formConfig?.submitTime != null ? #dates.format(formConfig.submitTime, 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
+                        </div>
+                    </div>
+                </div>
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend>申请信息</legend>
+                </fieldset>
+                <div class="layui-container">
+                    <div class="layui-row">
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2">流程表单</div>
+                            <div class="layui-col-xs8" th:text="${flowData?.theme}"></div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2">开始时间</div>
+                            <div class="layui-col-xs8"
+                                 th:text="${formConfig?.startTime != null ? #dates.format(formConfig.startTime, 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2">结束时间</div>
+                            <div class="layui-col-xs8"
+                                 th:text="${formConfig?.endTime != null ? #dates.format(formConfig.endTime, 'yyyy-MM-dd HH:mm:ss') : ''}"></div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2">事由</div>
+                            <div class="layui-col-xs8" th:text="${formConfig?.comment}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${flowData.nextNodes.size() > 0}">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>审批节点</legend>
+                    </fieldset>
+                    <div class="layui-container">
+                        <div class="layui-row">
+                            <div class="layui-form-item">
+                                <div class="layui-col-xs2">审批人</div>
+                                <div class="layui-col-xs10 layui-input-inline">
+                                    <select lay-search="" name="nextUser" lay-filter="approve">
+                                        <option value="">直接选择或搜索选择</option>
+                                        <option th:each="user:${userList}"
+                                                th:text="${user.firstName}" th:value="${user.id}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- 任务节点模块 -->
+                            <div class="layui-form-item">
+                                <div class="layui-col-xs2">下一环节</div>
+                                <div class="layui-col-xs10 layui-input-inline" th:if="${flowData?.nextNodeNum==0}">
+                                    <input type="radio" name="arc" title="归档" checked>
+                                </div>
+                                <div class="layui-col-xs10 layui-input-inline">
+                                    <input th:each="nextNode, info: ${flowData?.nextNodes}" type="radio" name="targetNodeId" lay-filter="selectNode" th:value="${nextNode.nodeId}" th:title="${nextNode.nodeName}" th:checked="${info.size==1}" th:data-assignee="${nextNode.assignee}" lay-verify="required">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend>审批信息</legend>
+                </fieldset>
+                <div class="layui-container">
+                    <div class="layui-row">
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2 required">备注</div>
+                            <div class="layui-col-xs8">
+                                <textarea name="comment" placeholder="请输入备注" class="layui-textarea" lay-verify="required"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row">
+                        <div class="layui-col-xs8 layui-col-md-offset2">
+<!--                        <div class="layui-col-xs8">-->
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="pass">同意</button>
+                                <button class="layui-btn layui-btn-danger" lay-submit lay-filter="reject">驳回</button>
+                                <button class="layui-btn layui-btn-danger" lay-submit lay-filter="back2FirstNode">驳回至首环节</button>
+                                <button class="layui-btn layui-btn-danger" lay-submit lay-filter="rejectPro"><i class="layui-icon layui-icon-prev"></i>驳回至上环节</button>
+                                <button class="layui-btn layui-btn-danger" lay-submit lay-filter="back2AnyNode"><i class="layui-icon layui-icon-circle"></i>回退任意环节</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${isFirstNode}">
+                <div class="layui-container">
+                    <div class="layui-row">
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2">表单名称</div>
+                            <div class="layui-col-xs10 layui-input-inline">
+                                <span th:text="${flowData?.theme}"></span>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2 required">开始日期</div>
+                            <div class="layui-col-xs10 layui-input-inline">
+                                <input type="text" name="startTime" id="startTime" class="layui-input"
+                                       lay-verify="required" th:value="${formConfig?.startTime != null ? #dates.format(formConfig.startTime, 'yyyy-MM-dd HH:mm:ss') : ''}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2 required">结束日期</div>
+                            <div class="layui-col-xs10 layui-input-inline">
+                                <input type="text" name="endTime" id="endTime" class="layui-input"
+                                       lay-verify="required" th:value="${formConfig?.endTime != null ? #dates.format(formConfig.endTime, 'yyyy-MM-dd HH:mm:ss') : ''}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <div class="layui-col-xs2 required">事由</div>
+                            <div class="layui-col-xs10">
+                                <textarea name="comment" placeholder="请输入事由" class="layui-textarea"
+                                          lay-verify="required" th:text="${formConfig?.comment}"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2">审批人</div>
+                            <div class="layui-col-xs10 layui-input-inline">
+                                <select lay-search="" name="nextUser" lay-filter="approve">
+                                    <option value="">直接选择或搜索选择</option>
+                                    <option th:each="user:${userList}"
+                                            th:text="${user.firstName}" th:value="${user.id}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- 任务节点模块 -->
+                        <div class="layui-form-item">
+                            <div class="layui-col-xs2">下一环节</div>
+                            <div class="layui-col-xs10 layui-input-inline" th:if="${flowData?.nextNodeNum==0}">
+                                <input type="radio" name="arc" title="归档" checked>
+                            </div>
+                            <div class="layui-col-xs10 layui-input-inline">
+                                <input th:each="nextNode, info: ${flowData?.nextNodes}" type="radio" name="targetNodeId" lay-filter="selectNode" th:value="${nextNode.nodeId}" th:title="${nextNode.nodeName}" th:checked="${info.size==1}" th:data-assignee="${nextNode.assignee}" lay-verify="required">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6 layui-col-md-offset4">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="submitBtn">确认提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 选择可驳回节点模板 -->
+            <div class="layui-container" style="display: none; width: 300px" id="canBackNodesLayout">
+                <div style="margin-top: 30px">
+                    <select name="canBackNode" lay-filter="canBackNodeFilter" th:if="${!flowData.readOnly}">
+                        <option value="">请选择需要驳回的节点</option>
+                        <option th:each="node: ${flowData.canBackNodes}" th:value="${node.nodeId}" th:text="${node.nodeName}"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'element', 'laydate'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            element = layui.element,
+            laydate = layui.laydate;
+
+        if([[${isFirstNode}]]) {
+            //日期
+            laydate.render({
+                elem: '#startTime'
+                ,type: 'datetime'
+            });
+            laydate.render({
+                elem: '#endTime'
+                ,type: 'datetime'
+            });
+        }
+
+        //通过
+        form.on('submit(pass)', function (param) {
+            param.field.outcome = '同意';
+            approve(param.field);
+            return false;
+        });
+        // 驳回
+        form.on('submit(reject)', function (param) {
+            param.field.outcome = '驳回';
+            approve(param.field);
+            return false;
+        });
+        // 驳回上一环节
+        form.on('submit(rejectPro)', function (param) {
+            var taskId = $('input[name="taskId"]').val();
+            param.field.outcome = '驳回';
+            $.ajax({
+                url: BASE_WEB + 'workflow/task/back/{taskId}'.replace("{taskId}", taskId),
+                type: "POST",
+                data: param.field,
+                success: function (res) {
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            //查询
+                            parent.layui.jquery("button[lay-filter='todo-search-btn']").click();
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+                    } else {
+                        layer.msg(res.msg, {icon: 7});
+                    }
+                }
+            });
+            return false;
+        });
+        // 驳回首环节
+        form.on('submit(back2FirstNode)', function (param) {
+            var taskId = $('input[name="taskId"]').val();
+            param.field.outcome = '驳回';
+            $.ajax({
+                url: BASE_WEB + 'workflow/task/back/first/{taskId}'.replace("{taskId}", taskId),
+                type: "POST",
+                data: param.field,
+                success: function (res) {
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            //查询
+                            parent.layui.jquery("button[lay-filter='todo-search-btn']").click();
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+                    } else {
+                        layer.msg(res.msg, {icon: 7});
+                    }
+                }
+            });
+            return false;
+        });
+        // 驳回至任意环节
+        form.on('submit(back2AnyNode)', function (param) {
+            var taskId = $('input[name="taskId"]').val();
+            var targetNodeId = '';
+            param.field.outcome = '驳回';
+            var idx = layer.open({
+                type: 1,
+                title: '选择驳回环节',
+                resize: true,
+                fixed: true,
+                shadeClose: true,
+                shade: 0.1,
+                scrollbar: false,
+                area: ['435px', '310px'],
+                content: $('#canBackNodesLayout'),
+                btn: ['确定', '取消'],
+                yes: function(index, layero) {
+                    targetNodeId = $('select[name="canBackNode"]').val();
+                    if (!targetNodeId) {
+                        layer.msg('请先选择驳回环节', {icon: 7});
+                        return ;
+                    }
+                    layer.confirm('确定要驳回选择的环节吗？', function () {
+                        $.ajax({
+                            url: BASE_WEB + 'workflow/task/back2/{taskId}/{targetNodeId}'.replace("{taskId}", taskId).replace('{targetNodeId}', targetNodeId),
+                            type: "POST",
+                            data: param.field,
+                            success: function (res) {
+                                if (res.code == 200) {
+                                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                        //查询
+                                        parent.layui.jquery("button[lay-filter='todo-search-btn']").click();
+                                        var iframeIndex = parent.layer.getFrameIndex(window.name);
+                                        parent.layer.close(iframeIndex);
+                                    });
+                                } else {
+                                    layer.msg(res.msg, {icon: 7});
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+
+            return false;
+        });
+
+        //提交
+        //监听提交
+        form.on('submit(submitBtn)', function (param) {
+            param.field.outcome = '同意';
+            $.ajax({
+                url: "/workflow/flow/submit",
+                type: "post",
+                data: param.field,
+                success: function (res) {
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            //查询
+                            parent.layui.jquery("button[lay-filter='todo-search-btn']").click();
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+                    } else {
+                        layer.msg(res.msg, {icon: 7});
+                    }
+                }
+            });
+            return false;
+        });
+
+        function approve(param) {
+            var taskId = $('input[name="taskId"]').val();
+            $.ajax({
+                url: BASE_WEB + "workflow/task/approve",
+                // url: BASE_WEB + 'workflow/put/back/task/{taskId}'.replace("{taskId}", taskId),
+                type: "POST",
+                data: param,
+                success: function (res) {
+                    if (res.code == 200) {
+                        layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                            //查询
+                            parent.layui.jquery("button[lay-filter='todo-search-btn']").click();
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+                    } else {
+                        layer.msg(res.msg, {icon: 7});
+                    }
+                }
+            });
+        }
+
+    });
+</script>
+</body>
+</html>

@@ -76,7 +76,7 @@
                 },
                 success: function (res) {
                     if (res.code == 200) {
-                        layer.msg(res.msg, {icon: 1});
+                        layer.msg(res.msg, {icon: 1, time: 1000});
                     } else {
                         layer.msg(res.msg, {icon: 7});
                     }

@@ -71,8 +71,30 @@ public class R extends HashMap<String, Object> {
      *
      * @return 成功消息
      */
+    public static R success(String msg, Object data) {
+        R json = new R();
+        json.put("success", true);
+        json.put("msg", msg);
+        json.put("data", data);
+        json.put("code", 200);
+        return json;
+    }
+
+    /**
+     * 返回成功消息
+     *
+     * @return 成功消息
+     */
     public static R success() {
         return R.success("操作成功");
+    }
+
+    public static R successData(Object value) {
+        R json = new R();
+        json.put("success", true);
+        json.put("code", 0);
+        json.put("data", value);
+        return json;
     }
 
     public static R successData(int code, Object value) {

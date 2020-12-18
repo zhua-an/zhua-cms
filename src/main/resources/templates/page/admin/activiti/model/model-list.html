@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="common/head :: head_Content"/>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">模型分类</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="category" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="tableToolbar">
+            <div class="layui-btn-container">
+                <shiro:hasPermission name="sys_dict_add">
+                    <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加</button>
+                </shiro:hasPermission>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="tableFilter"></table>
+
+        <script type="text/html" id="rowToolbarTpl">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-design" lay-event="design">设计</a>
+<!--            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-view" lay-event="view">模型图</a>-->
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-deploy" lay-event="deploy">部署</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+
+    </div>
+</div>
+<script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: BASE_WEB + 'activiti/model/page',
+            toolbar: '#tableToolbar',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [
+                [
+                    {type: 'numbers', width: 50},
+                    {type: "checkbox", width: 50},
+                    {field: 'id', title: '模型ID', width: 150},
+                    {field: 'name', title: '模型名称', width: 200, sort: true},
+                    {field: 'key', title: '模型KEY', width: 100},
+                    {field: 'category', title: '模型分类', width: 200},
+                    {field: 'version', title: '模型版本', width: 100},
+                    {field: 'createTime', width: 180, title: '创建时间', sort: true},
+                    {field: 'lastUpdateTime', width: 180, title: '更新时间', sort: true},
+                    {title: '操作', minWidth: 150, toolbar: '#rowToolbarTpl', align: 'center'}
+                ]
+            ],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line',
+            height: 'full-200'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var param = data.field
+            // var result = JSON.stringify(data.field);
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: param
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(tableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加',
+                    type: 2,
+                    shade: 0.1,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['800px', '600px'],
+                    content: BASE_WEB + 'activiti/model/add',
+                });
+                // $(window).on("resize", function () {
+                //     layer.full(index);
+                // });
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(tableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(tableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'design') {
+                location.href = "/activiti/model/editor?modelId=" + obj.data.id;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除行么', function (index) {
+                    if (index) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/activiti/model/delete/" + data.id,
+                            error: function (request) {
+                                layer.msg('系统错误', {icon: 7});
+                            },
+                            success: function (res) {
+                                if (res.code == 200) {
+                                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                        //查询
+                                        $("button[lay-filter='data-search-btn']").click();
+                                    });
+                                } else {
+                                    layer.msg(res.msg, {icon: 7});
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    }
+                });
+            } else if (obj.event === 'deploy') {
+                $.ajax({
+                    type: "POST",
+                    url: "/activiti/model/deploy",
+                    data: {id:data.id},
+                    error: function (request) {
+                        layer.msg('系统错误', {icon: 7});
+                    },
+                    success: function (res) {
+                        if (res.code == 200) {
+                            layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                //查询
+                                $("button[lay-filter='data-search-btn']").click();
+                            });
+                        } else {
+                            layer.msg(res.msg, {icon: 7});
+                        }
+                    }
+                });
+            } else if(obj.event === 'view') {
+                layer.open({
+                    id: 'model-view',
+                    type: 2,
+                    area: ['600px', '300px'],
+                    fix: false,
+                    maxmin: true,
+                    shadeClose: false,
+                    shade: 0.4,
+                    title: "流程图",
+                    content: BASE_WEB + 'activiti/model/view?processDefinitionId=' + data.id
+                });
+            }
+        });
+
+    });
+
+</script>
+</body>
+</html>

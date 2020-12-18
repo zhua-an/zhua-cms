@@ -49,7 +49,7 @@
 
         <table class="layui-hide" id="currentTableId" lay-filter="tableFilter"></table>
 
-        <script type="text/html" id="currentTableBar">
+        <script type="text/html" id="rowToolbarTpl">
             <shiro:hasPermission name="sys_user_edit">
                 <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
             </shiro:hasPermission>
@@ -69,7 +69,7 @@
 
         table.render({
             elem: '#currentTableId',
-            url: '/sysUser/page',
+            url: BASE_WEB + 'sysUser/page',
             toolbar: '#tableToolbar',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
@@ -96,7 +96,7 @@
                     {field: 'introduction', title: '个人介绍', width: 200},
                     {field: 'createTime', width: 180, title: '创建时间', sort: true},
                     {field: 'updateTime', width: 180, title: '更新时间', sort: true},
-                    {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: 'center'}
+                    {title: '操作', minWidth: 150, toolbar: '#rowToolbarTpl', align: 'center'}
                 ]
             ],
             limits: [10, 15, 20, 25, 50, 100],
@@ -134,7 +134,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['800px', '600px'],
-                    content: '/sysUser/info',
+                    content: BASE_WEB + 'sysUser/info',
                 });
                 // $(window).on("resize", function () {
                 //     layer.full(index);
@@ -157,7 +157,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['800px', '600px'],
-                    content: '/sysUser/info?id=' + data.id,
+                    content: BASE_WEB + 'sysUser/info?id=' + data.id,
                 });
                 // $(window).on("resize", function () {
                 //     layer.full(index);
@@ -174,7 +174,7 @@
                             },
                             success: function (res) {
                                 if (res.code == 200) {
-                                    layer.msg(res.msg, {icon: 1}, function () {
+                                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                         //查询
                                         $("button[lay-filter='data-search-btn']").click();
                                     });

@@ -75,9 +75,9 @@
                 </div>
             </div>
             <div class="layui-form-item menu">
-                <label class="layui-form-label required">请求地址</label>
+                <label class="layui-form-label">请求地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="href" lay-verify="required" lay-reqtext="请求地址不能为空" placeholder="请输入请求地址"
+                    <input type="text" name="href" lay-reqtext="请求地址不能为空" placeholder="请输入请求地址"
                            th:value="${sysMenu?.href}" class="layui-input">
                 </div>
             </div>
@@ -171,7 +171,7 @@
                         },
                         success: function (res) {
                             if (res.code == 200) {
-                                layer.msg(res.msg, {icon: 1}, function () {
+                                layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                     //查询
                                     parent.layui.jquery("button[lay-filter='data-search-btn']").click();
                                     var iframeIndex = parent.layer.getFrameIndex(window.name);

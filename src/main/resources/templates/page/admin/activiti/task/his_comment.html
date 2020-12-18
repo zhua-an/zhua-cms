@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="common/head :: head_Content"/>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-row">
+            <div class="layui-col-md12">
+                <div class="layui-fluid" style="padding:15px">
+                    <div class="layui-card">
+                        <div class="layui-card-header">流程流转审批意见</div>
+
+                        <div class="layui-card-body">
+                            <table class="layui-table" lay-skin="line">
+                                <colgroup>
+                                    <col width="250">
+                                    <col width="150">
+                                    <col width="250">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>节点名称</th>
+                                    <th>审批人</th>
+                                    <th>审批时间</th>
+                                    <th>审批意见</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${comments.size() == 0}">
+                                    <td colspan="4" style="text-align: center">无数据</td>
+                                </tr>
+                                <tr th:each="comment: ${comments}">
+                                    <td th:text="${comment.taskName}">节点名称</td>
+                                    <td th:text="${comment.username}">审批人</td>
+                                    <td th:text="${#dates.format(comment.time, 'yyyy-MM-dd HH:mm:ss')}">审批时间</td>
+                                    <td th:text="${comment.fullMessage}">审批意见</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="layui-card">
+                        <div class="layui-card-header">流程实例流转图</div>
+
+                        <div class="layui-card-body">
+                            <img th:src="@{/workflow/process/}+${processInstanceId + '/flowChart/image.png'}">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+    });
+</script>
+</body>
+</html>

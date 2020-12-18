@@ -1,12 +1,6 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 49.232.172.159
- Source Server Type    : MySQL
- Source Server Version : 80018
- Source Host           : 49.232.172.159:3306
- Source Schema         : template
-
  Target Server Type    : MySQL
  Target Server Version : 80018
  File Encoding         : 65001
@@ -217,6 +211,10 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 INSERT INTO `sys_user` VALUES (1, 'zhua.an', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '342961677', NULL, '', 'zhua_an@163.com', '山东省青岛市', 'http://qiniu.zhua91.com/avatar/5393354f6a654e5aa2a9081052ab08c1', 1, '2018-04-20 07:15:18', '2020-07-15 18:47:09', '0', '0', NULL, NULL, '心存感激💓，所遇皆温柔👣');
 INSERT INTO `sys_user` VALUES (2, 'test', 'test', 'e10adc3949ba59abbe56e057f20f883e', NULL, NULL, '', '123@qq.com', '山东省青岛市', '', NULL, '2020-07-29 18:37:18', '2020-08-10 11:21:15', '0', '0', NULL, NULL, '测试账号');
+INSERT INTO `sys_user` VALUES (5, '张三', 'user1', 'e10adc3949ba59abbe56e057f20f883e', NULL, NULL, '', 'user1@163.com', '', '', NULL, '2020-12-05 15:51:16', '2020-12-10 12:00:20', '0', '0', NULL, NULL, '员工组');
+INSERT INTO `sys_user` VALUES (6, '李四', 'user2', 'e10adc3949ba59abbe56e057f20f883e', NULL, NULL, '', 'user2@163.com', '', '', NULL, '2020-12-05 15:51:31', '2020-12-10 12:00:31', '0', '0', NULL, NULL, '总监组');
+INSERT INTO `sys_user` VALUES (7, '王五', 'user3', 'e10adc3949ba59abbe56e057f20f883e', NULL, NULL, '', 'user3@163.com', '', '', NULL, '2020-12-05 15:52:03', '2020-12-10 12:00:46', '0', '0', NULL, NULL, '经理组');
+INSERT INTO `sys_user` VALUES (8, '吴六', 'user4', 'e10adc3949ba59abbe56e057f20f883e', NULL, NULL, '', 'user4@163.com', '', '', NULL, '2020-12-05 15:52:19', '2020-12-10 12:00:49', '0', '0', NULL, NULL, '人力资源组');
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -234,5 +232,62 @@ CREATE TABLE `sys_user_role`  (
 -- Records of sys_user_role
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES (1, 1, 1);
+
+-- ----------------------------
+-- Table structure for license_event
+-- ----------------------------
+DROP TABLE IF EXISTS `license_event`;
+CREATE TABLE `license_event`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `license_id` bigint(20) NOT NULL COMMENT '事项',
+  `license_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '事项名称',
+  `account_id` varchar(20) NOT NULL COMMENT '申请人',
+  `account_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '申请人名称',
+  `start_time` datetime(0) NOT NULL COMMENT '申请时间',
+  `approve_id` varchar(50) NOT NULL COMMENT '审批人',
+  `approve_time` datetime(0) NULL DEFAULT NULL COMMENT '审批时间',
+  `status_id` bigint(20) NOT NULL COMMENT '状态',
+  `status_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '状态名称',
+  `form_id` bigint(20) NOT NULL COMMENT '表单id',
+  `work_flow_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '流程id',
+  `is_deleted` bit(1) NOT NULL,
+  `creator` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `mender` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `modify_time` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+
+-- ----------------------------
+-- Table structure for license_form
+-- ----------------------------
+DROP TABLE IF EXISTS `license_form`;
+CREATE TABLE `license_form`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `start_time` datetime(0) NOT NULL,
+  `end_time` datetime(0) NOT NULL,
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `is_deleted` bit(1) NOT NULL,
+  `creator` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `mender` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `modify_time` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '请假表单' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for license_setting
+-- ----------------------------
+DROP TABLE IF EXISTS `license_setting`;
+CREATE TABLE `license_setting`  (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '工作流名称',
+  `work_flow_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '工作流key',
+  `is_deleted` bit(1) NOT NULL,
+  `creator` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `mender` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `modify_time` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '流程信息' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -76,6 +76,19 @@ spring:
     #禁用缓存 默认false
     servlet:
       content-type: text/html
+  #activiti配置
+  activiti:
+    #创建数据库历史数据表
+    db-history-used: true
+    #Activiti记录历史任务数据级别，full是最全的，方便日后查询使用
+    history-level: full
+    #表示启动时检查数据库表，不存在则创建  默认为"true"
+    database-schema-update: "true"
+    # 自动部署验证设置:true-开启（默认）、false-关闭
+    check-process-definitions: false
+  main:
+    allow-bean-definition-overriding: true
+
 
 # mybaits-plus配置
 mybatis-plus:

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <head th:replace="common/head :: head_Normal"/>
     <title th:text=${title}></title>
@@ -42,7 +42,7 @@
                     <a href="javascript:;" data-check-screen="full"><i class="fa fa-arrows-alt"></i></a>
                 </li>
                 <li class="layui-nav-item layuimini-setting">
-                    <a href="javascript:;">admin</a>
+                    <a href="javascript:;" shiro:principal property="name"></a>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="javascript:;" layuimini-content-href="user/userSetting" data-title="基本资料"
@@ -134,7 +134,7 @@
 
         $('.login-out').on("click", function () {
             layer.confirm('确定退出系统么?', {icon: 3, title: '提示'}, function (index) {
-                window.location = '/admin/logout';
+                window.location = BASE_WEB + 'admin/logout';
             });
         });
     });

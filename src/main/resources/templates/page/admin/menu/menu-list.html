@@ -48,7 +48,7 @@
 
                 <table class="layui-table" id="tableId" lay-filter="tableFilter"></table>
 
-                <script type="text/html" id="currentTableBar">
+                <script type="text/html" id="rowToolbarTpl">
                     <shiro:hasPermission name="sys_menu_edit">
                         <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
                     </shiro:hasPermission>
@@ -70,7 +70,7 @@
                 // 渲染树形表格
                 var insTb = treeTable.render({
                     elem: '#tableId',
-                    url: '/sysMenu/page',
+                    url: BASE_WEB + 'sysMenu/page',
                     toolbar: '#tableToolbar',
                     tree: {
                         iconIndex: 1,           // 折叠图标显示在第几列
@@ -93,7 +93,7 @@
                             {field: 'delFlag', title: '删除标识', width: 120, templet: delFlagTemplet},
                             {field: 'createTime', width: 180, title: '创建时间'},
                             {field: 'updateTime', width: 180, title: '更新时间'},
-                            {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+                            {title: '操作', minWidth: 150, toolbar: '#rowToolbarTpl', align: "center"}
                         ]
                     ],
                     height: 'full-50'
@@ -136,7 +136,7 @@
                             maxmin: true,
                             shadeClose: true,
                             area: ['800px', '600px'],
-                            content: '/sysMenu/info',
+                            content: BASE_WEB + 'sysMenu/info',
                         });
                         // $(window).on("resize", function () {
                         //     layer.full(index);
@@ -158,7 +158,7 @@
                             maxmin: true,
                             shadeClose: true,
                             area: ['800px', '600px'],
-                            content: '/sysMenu/info?id=' + data.id,
+                            content: BASE_WEB + 'sysMenu/info?id=' + data.id,
                         });
                         // $(window).on("resize", function () {
                         //     layer.full(index);
@@ -175,7 +175,7 @@
                                     },
                                     success: function (res) {
                                         if (res.code == 200) {
-                                            layer.msg(res.msg, {icon: 1}, function () {
+                                            layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                                 //查询
                                                 $("button[lay-filter='data-search-btn']").click();
                                             });

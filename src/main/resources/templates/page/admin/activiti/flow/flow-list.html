@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="common/head :: head_Content"/>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">模型名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="processName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="tableToolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加</button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="tableFilter"></table>
+
+        <script type="text/html" id="rowToolbarTpl">
+            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="view"><i class="layui-icon layui-icon-more"></i>查看</a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="historicReview"><i class="layui-icon layui-icon-help"></i>历史审批</a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-view" lay-event="flowPic">流程图</a>
+        </script>
+
+        <!--表格列格式化模板 start-->
+        <script type="text/html" id="statusTpl">
+            {{#  if(d.processStatus == 1){ }}
+            <span class="layui-badge layui-bg-blue">审批中</span>
+            {{# } else if(d.processStatus == 2) { }}
+            <span class="layui-badge layui-bg-black">已结束</span>
+            {{# } else { }}
+            <span class="layui-badge layui-bg-green">未提交</span>
+            {{# } }}
+        </script>
+        <!--表格列格式化模板 end-->
+    </div>
+</div>
+<script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: BASE_WEB + 'workflow/flow/page',
+            toolbar: '#tableToolbar',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [
+                [
+                    {type: 'numbers', width: 50}
+                    ,{type:'checkbox', fixed: 'left'}
+                    // ,{field: 'id', title: '流程ID', width: 130}
+                    ,{field: 'theme', title: '标题'}
+                    ,{field: 'name', title: '所属流程', width: 200}
+                    ,{field: 'currentTaskNames', title: '当前环节', width: 200}
+                    ,{field: 'processStatus', title: '流程状态', width: 100, align: 'center', templet: '#statusTpl'}
+                    // ,{field: 'startTime', title: '创建时间', width: 180, templet: formatStartTime}
+                    ,{field: 'startTime', title: '创建时间', width: 180}
+                    // ,{field: 'submitTime', title: '申请时间', width: 180, templet: formatSubmitTime}
+                    ,{field: 'submitTime', title: '申请时间', width: 180}
+                    ,{field: '', title: '操作', width: 250, fixed: 'right', templet: '#rowToolbarTpl'}
+                ]
+            ],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line',
+            height: 'full-200'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var param = data.field
+            // var result = JSON.stringify(data.field);
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: param
+            }, 'data');
+
+            return false;
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(tableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(tableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                var idx = layer.open({
+                    title: '添加',
+                    type: 2,
+                    shade: 0.1,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['800px', '600px'],
+                    content: BASE_WEB + 'workflow/flow/add',
+                });
+                // $(window).on("resize", function () {
+                //     layer.full(index);
+                // });
+                layer.full(idx);
+            }
+        });
+
+        table.on('tool(tableFilter)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+            if (layEvent === 'view') {
+                var idx = layer.open({
+                    type: 2
+                    ,title: '流程信息'
+                    ,content: BASE_WEB + 'workflow/process/{processInstanceId}/form'.replace('{processInstanceId}', data.id)
+                    ,maxmin: true
+                    ,area: ['800px', '500px']   // 宽高
+                });
+                layer.full(idx);
+            }else if (layEvent === 'historicReview') {
+                idx = layer.open({
+                    type: 2
+                    ,title: '历史审批信息'
+                    ,content: BASE_WEB + 'workflow/task/hisComment?processInstanceId=' + data.processInstanceId
+                    ,maxmin: true
+                    ,area: ['800px', '500px']   // 宽高
+                });
+                layer.full(idx);
+            }else if (layEvent === 'flowPic') {
+                layer.open({
+                    type: 1,
+                    title: '流程图',
+                    shade: 0.1,
+                    area: ['800px', '500px'],
+                    content: '<img src="/workflow/flow/displayFlowCurrPic?processInstanceId=' + data.processInstanceId + '">'
+                });
+            }
+        });
+
+        function formatStartTime(d) {
+            return new Date(d.startTime).format("yyyy-MM-dd HH:mm:ss")
+        }
+
+        function formatSubmitTime(d) {
+            if (!d.submitTime) {
+                return '';
+            }
+            return new Date(d.submitTime).format("yyyy-MM-dd HH:mm:ss");
+        }
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <head th:replace="common/head :: head_Normal"/>
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-form layuimini-form">
+            <div class="layui-container">
+                <div class="layui-row">
+                    <input hidden="hidden" name="nextUser">
+                    <div class="layui-form-item">
+                        <div class="layui-col-xs2">表单名称</div>
+                        <div class="layui-col-xs10 layui-input-inline">
+                            <span th:text="${flowData?.theme}"></span>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-col-xs2">流程部署ID</div>
+                        <div class="layui-col-xs10 layui-input-inline">
+                            <span th:text="${formConfig?.deploymentId}"></span>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-col-xs2 required">开始日期</div>
+                        <div class="layui-col-xs10 layui-input-inline">
+                            <span th:text="${formConfig?.startTime != null ? #dates.format(formConfig.startTime, 'yyyy-MM-dd HH:mm:ss') : ''}"></span>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-col-xs2 required">结束日期</div>
+                        <div class="layui-col-xs10 layui-input-inline">
+                            <span th:text="${formConfig?.endTime != null ? #dates.format(formConfig.endTime, 'yyyy-MM-dd HH:mm:ss') : ''}"></span>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <div class="layui-col-xs2 required">事由</div>
+                        <div class="layui-col-xs10">
+                            <span th:text="${formConfig?.comment}"></span>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-col-xs2">审批人</div>
+                        <div class="layui-col-xs10 layui-input-inline">
+                            <span th:text="${flowData?.nextUser}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            laydate = layui.laydate;
+        //日期
+        laydate.render({
+            elem: '#startTime'
+            ,type: 'datetime'
+        });
+        laydate.render({
+            elem: '#endTime'
+            ,type: 'datetime'
+        });
+    });
+</script>
+</body>
+</html>

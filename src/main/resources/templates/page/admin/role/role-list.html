@@ -47,7 +47,7 @@
 
         <table class="layui-hide" id="currentTableId" lay-filter="tableFilter"></table>
 
-        <script type="text/html" id="currentTableBar">
+        <script type="text/html" id="rowToolbarTpl">
             <shiro:hasPermission name="sys_role_edit">
                 <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
             </shiro:hasPermission>
@@ -67,7 +67,7 @@
 
         table.render({
             elem: '#currentTableId',
-            url: '/sysRole/page',
+            url: BASE_WEB + 'sysRole/page',
             toolbar: '#tableToolbar',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
@@ -84,7 +84,7 @@
                     {field: 'delFlag', title: '删除标识', width: 120, templet: delFlagTemplet},
                     {field: 'createTime', width: 180, title: '创建时间', sort: true},
                     {field: 'updateTime', width: 180, title: '更新时间', sort: true},
-                    {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+                    {title: '操作', minWidth: 150, toolbar: '#rowToolbarTpl', align: "center"}
                 ]
             ],
             limits: [10, 15, 20, 25, 50, 100],
@@ -122,7 +122,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['800px', '600px'],
-                    content: '/sysRole/info',
+                    content: BASE_WEB + 'sysRole/info',
                 });
                 // $(window).on("resize", function () {
                 //     layer.full(index);
@@ -148,7 +148,7 @@
                     },
                     success: function (res) {
                         if (res.code == 200) {
-                            layer.msg(res.msg, {icon: 1}, function () {
+                            layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                 //查询
                                 $("button[lay-filter='data-search-btn']").click();
                             });
@@ -175,7 +175,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['800px', '600px'],
-                    content: '/sysRole/info?id=' + data.id,
+                    content: BASE_WEB + 'sysRole/info?id=' + data.id,
                 });
                 // $(window).on("resize", function () {
                 //     layer.full(index);
@@ -192,7 +192,7 @@
                             },
                             success: function (res) {
                                 if (res.code == 200) {
-                                    layer.msg(res.msg, {icon: 1}, function () {
+                                    layer.msg(res.msg, {icon: 1, time: 1000}, function () {
                                         //查询
                                         $("button[lay-filter='data-search-btn']").click();
                                     });

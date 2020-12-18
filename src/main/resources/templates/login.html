@@ -203,6 +203,7 @@
 <!--兼容移动端滑块滑动表单安全验证码jquery插件 -->
 <script type="text/javascript" th:src="@{/static/lib/slidercaptcha/longbow.slidercaptcha.js}"></script>
 <script type="text/javascript" th:inline="javascript">
+    var BASE_WEB = [[${#httpServletRequest.getContextPath()}]] + '/';
     var isRoll = [[${RollVerification}]];
     layui.use(['form'], function () {
         var form = layui.form,
@@ -240,7 +241,7 @@
                     },
                     success: function (data) {
                         if (data.code == 200) {
-                            location.href = '/admin/index';
+                            location.href = BASE_WEB + 'admin/index';
                         } else {
                             layer.msg(data.msg, function () {
                                 //关闭后的操作
@@ -290,7 +291,7 @@
                     return ret;
                 },
                 setSrc: function () {
-                    return '/static/images/home_1.png';
+                    return BASE_WEB + 'static/images/home_1.png';
                 },
                 onSuccess: function () {
                     var dataFormJson = $("#loginForm").serialize();
@@ -305,7 +306,7 @@
                         },
                         success: function (data) {
                             if (data.code == 200) {
-                                location.href = '/admin/index';
+                                location.href = BASE_WEB + 'admin/index';
                             } else {
                                 layer.msg(data.msg, function () {
                                     //关闭后的操作

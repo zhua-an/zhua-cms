@@ -75,7 +75,7 @@ public class SysMenuController {
         //条件构造器
         QueryWrapper<SysMenu> wrapper = new QueryWrapper();
         wrapper.like(StringUtils.isNoneBlank(form.getMenuName()), "menu_name", form.getMenuName());
-        wrapper.orderByDesc("create_time");
+        wrapper.orderByAsc("id", "sort");
 //        sysMenuService.page(page, wrapper);
         List<SysMenu> list = sysMenuService.list(wrapper);
         int total = sysMenuService.count(wrapper);

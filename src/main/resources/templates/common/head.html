@@ -21,6 +21,9 @@
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script th:fragment="context" th:inline="javascript">
+        var BASE_WEB = [[${#httpServletRequest.getContextPath()}]] + '/';
+    </script>
 </head>
 
 <head th:fragment="head_Content">
@@ -42,4 +45,7 @@
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script th:fragment="context" th:inline="javascript">
+        var BASE_WEB = [[${#httpServletRequest.getContextPath()}]] + '/';
+    </script>
 </head>

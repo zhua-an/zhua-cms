@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="common/head :: head_Content"/>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layui-tab" lay-filter="demo">
+        <ul class="layui-tab-title">
+            <li data-status="1" class="layui-this">我的待办</li>
+            <li data-status="2">我的已办</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <fieldset class="table-search-fieldset">
+                    <legend>搜索信息</legend>
+                    <div style="margin: 10px 10px 10px 10px">
+                        <form class="layui-form layui-form-pane" action="">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">流程名称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="processName" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">任务名称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="taskName" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                            lay-filter="todo-search-btn"><i class="layui-icon"></i> 搜 索
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </fieldset>
+                <table class="layui-hide" id="workflowTodo" lay-filter="workflow"></table>
+                <script type="text/html" id="workflowTodoBar">
+                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="view"><i class="layui-icon layui-icon-more"></i>查看</a>
+                    <a class="layui-btn layui-btn-xs" lay-event="todoTask"><i class="layui-icon layui-icon-ok"></i>办理</a>
+                    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="historicReview"><i class="layui-icon layui-icon-help"></i>历史审批</a>
+                </script>
+            </div>
+            <div class="layui-tab-item">
+                <fieldset class="table-search-fieldset">
+                    <legend>搜索信息</legend>
+                    <div style="margin: 10px 10px 10px 10px">
+                        <form class="layui-form layui-form-pane" action="">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">流程名称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="processName" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">任务名称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="taskName" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                            lay-filter="done-search-btn"><i class="layui-icon"></i> 搜 索
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </fieldset>
+                <table class="layui-hide" id="workflowDone" lay-filter="workflow"></table>
+                <script type="text/html" id="workflowDoneBar">
+                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="doneView"><i class="layui-icon layui-icon-more"></i>查看</a>
+                    <a class="layui-btn layui-btn-xs" lay-event="recall"><i class="layui-icon layui-icon-return"></i>撤回</a>
+                    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="historicReview"><i class="layui-icon layui-icon-help"></i>历史审批</a>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+<!--表格列格式化模板 start-->
+<script type="text/html" id="todoStatusTpl">
+    {{#  if(d.suspensionState == 1){ }}
+    <span class="layui-badge layui-bg-green">激活</span>
+    {{# } else { }}
+    <span class="layui-badge layui-bg-red">挂起</span>
+    {{# } }}
+</script>
+<script type="text/html" id="doneStatusTpl">
+    {{#  if(d.processStatus == 1){ }}
+    <span class="layui-badge layui-bg-blue">审批中</span>
+    {{# } else if(d.processStatus == 2) { }}
+    <span class="layui-badge layui-bg-black">已结束</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="appStatusTpl">
+    {{#  if(d.approveAction == '同意'){ }}
+    <span class="layui-badge layui-bg-green">同意</span>
+    {{# } else if(d.approveAction == '驳回') { }}
+    <span class="layui-badge layui-bg-red">驳回</span>
+    {{# } else if(d.approveAction == '撤回') { }}
+    <span class="layui-badge layui-bg-red">撤回</span>
+    {{# } }}
+</script>
+<!--表格列格式化模板 end-->
+<script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['table', 'form', 'element'], function () {
+        var table = layui.table,
+            $ = layui.jquery,
+            form = layui.form,
+            element = layui.element;
+
+        var todoCol = [
+            [
+                {type:'checkbox', fixed: 'left'}
+                // ,{field: 'id', title: '流程ID', width: 130}
+                ,{field: 'name', title: '任务名称', width: 250}
+                ,{field: 'processName', title: '所属流程'}
+                ,{field: 'processDefinitionVersion', title: '流程版本', width: 100}
+                ,{field: 'startUser', title: '流程发起人', width: 100}
+                ,{field: 'suspensionState', title: '状态', width: 90, align: 'center', templet: '#todoStatusTpl'}
+                ,{field: 'createTime', title: '创建时间', width: 180}
+                ,{field: '', title: '操作', width: 250, fixed: 'right', toolbar: '#workflowTodoBar'}
+            ]
+        ];
+        var doneCol = [
+            [ //表头
+                {type:'checkbox', fixed: 'left'}
+                // ,{field: 'id', title: '流程ID', width: 130}
+                ,{field: 'processName', title: '所属流程'}
+                ,{field: 'processDefinitionVersion', title: '流程版本', width: 100}
+                ,{field: 'name', title: '任务名称', width: 200}
+                ,{field: 'startUser', title: '流程发起人', width: 100}
+                ,{field: 'assignee', title: '委托人', width: 100, templet: '<span>{{d.owner==null?"":d.assignee}}</span>'}
+                ,{field: 'approveAction', title: '审批操作', width: 90, align: 'center', templet: '#appStatusTpl'}
+                ,{field: 'durationInMillis', title: '耗时', width: 180, templet: convertTo}
+                ,{field: 'processStatus', title: '流程状态', width: 90, align: 'center', templet: '#doneStatusTpl'}
+                ,{field: 'endTime', title: '完成时间', width: 180}
+                ,{field: '', title: '操作', width: 250, fixed: 'right', toolbar: '#workflowDoneBar'}
+            ]
+        ];
+
+        // 初始化加载
+        getList('#workflowTodo', BASE_WEB + 'workflow/task/todoList', todoCol);
+        //一些事件监听
+        element.on('tab(demo)', function (data) {
+            var statusId = $(this).attr('data-status');
+            var position = '#workflowTodo';
+            var col = todoCol;
+            var url = BASE_WEB + 'workflow/task/todoList';
+            switch (statusId) {
+                case '1':
+                    position = '#workflowTodo';
+                    col = todoCol;
+                    url = BASE_WEB + 'workflow/task/todoList';
+                    break;
+                case '2':
+                    position = '#workflowDone';
+                    col = doneCol;
+                    url = BASE_WEB + 'workflow/task/doneList';
+                    break;
+                default:
+                    position = '#workflowTodo';
+                    col = todoCol;
+                    url = BASE_WEB + 'workflow/task/todoList';
+            }
+            getList(position, url, col)
+        });
+
+        // 公共方法
+        function getList(position,url,col) {
+            // 表格
+            table.render({
+                elem: position,
+                url: url,
+                defaultToolbar: ['filter', 'exports', 'print', {
+                    title: '提示',
+                    layEvent: 'LAYTABLE_TIPS',
+                    icon: 'layui-icon-tips'
+                }],
+                cols: col,
+                limits: [10, 15, 20, 25, 50, 100],
+                limit: 15,
+                page: true,
+                skin: 'line',
+                height: 'full-200'
+            });
+        }
+
+        // 监听搜索操作
+        form.on('submit(todo-search-btn)', function (data) {
+            var param = data.field
+            // var result = JSON.stringify(data.field);
+
+            //执行搜索重载
+            tableReload('workflowTodo',param);
+            return false;
+        });
+
+        // 监听搜索操作
+        form.on('submit(done-search-btn)', function (data) {
+            var param = data.field
+            // var result = JSON.stringify(data.field);
+
+            tableReload('workflowDone',param);
+            return false;
+        });
+
+        function tableReload(tableId, data) {
+            //执行搜索重载
+            table.reload(tableId, {
+                page: {
+                    curr: 1
+                }
+                , where: data
+            }, 'data');
+        }
+
+        //监听工具条
+        table.on('tool(workflow)', function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if (layEvent === 'view') {
+                //查看
+                layer.open({
+                    type: 2
+                    ,title: data.processName
+                    ,content: BASE_WEB + 'workflow/task/{taskId}/form'.replace('{taskId}', data.id)
+                    ,maxmin: true
+                    ,area: ['800px', '600px']   // 宽高
+                });
+            } else if (layEvent === 'todoTask') {
+                //办理
+                idx = layer.open({
+                    type: 2
+                    ,title: '快速办理任务'
+                    ,content: BASE_WEB + 'workflow/task/{taskId}/approve'.replace('{taskId}', data.id)
+                    ,maxmin: true
+                    ,area: ['478px', '78%']   // 宽高
+                });
+                layer.full(idx);
+            } else if (layEvent === 'historicReview') {
+                //历史
+                idx = layer.open({
+                    type: 2
+                    ,title: '历史审批信息'
+                    ,content: BASE_WEB + 'workflow/task/hisComment?processInstanceId=' + data.processInstanceId
+                    ,maxmin: true
+                    ,area: ['800px', '500px']   // 宽高
+                });
+                layer.full(idx);
+            } else if (layEvent === 'doneView') {
+                //查看
+                layer.open({
+                    type: 2
+                    ,title: data.processName
+                    ,content: BASE_WEB + 'workflow/process/{processInstanceId}/form'.replace('{processInstanceId}', data.processInstanceId)
+                    ,maxmin: true
+                    ,area: ['800px', '600px']   // 宽高
+                });
+            } else if (layEvent === 'recall') {
+                //撤回
+                layer.confirm('确定要撤回审批吗？', function () {
+                    $.ajax({
+                        url: BASE_WEB + 'workflow/task/withdraw/{taskId}'.replace("{taskId}", data.id),
+                        type: "POST",
+                        data: {},
+                        success: function (res) {
+                            if (res.code == 200) {
+                                layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                                    //查询
+                                    layui.jquery("button[lay-filter='done-search-btn']").click();
+                                });
+                            } else {
+                                layer.msg(res.msg, {icon: 7});
+                            }
+                        }
+                    });
+
+                });
+
+            }
+        });
+
+        function formatEndTime(d) {
+            return new Date(d.endTime).format("yyyy-MM-dd hh:mm:ss")
+        }
+
+        function convertTo(d) {
+            var seconds = d.durationInMillis / 1000;
+            var hour = Math.floor(seconds / (60 * 60));
+            var hsRemainder = seconds % (60 * 60);
+            var minute = Math.floor(hsRemainder / 60);
+            var secondsRemainder = Math.round(hsRemainder % 60);
+            return (hour === 0 ? '' : hour + '小时') + (minute === 0 ? '' : minute + '分钟') + secondsRemainder + '毫秒';
+        }
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <head th:replace="common/head :: head_Content"/>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">模型名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="tableToolbar">
+            <div class="layui-btn-container">
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="tableFilter"></table>
+
+        <script type="text/html" id="rowToolbarTpl">
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete" lay-event="suspend">挂起</a>
+            <a class="layui-btn layui-btn-xs layui-btn-info data-count-delete" lay-event="activate">激活</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+
+        <script type="text/html" id="xml">
+            <a download="{{d.bpmn}}" style="color: #00b7ee"
+               href='/activiti/process/defined/resource?deploymentId={{d.deploymentId}}&resourceName={{d.bpmn}}'>{{d.bpmn}}</a>
+        </script>
+        <script type="text/html" id="png">
+            <a lay-event="png" style="color: #00b7ee">{{d.png}}</a>
+        </script>
+        <script type="text/html" id="statusTpl">
+            {{#  if(d.suspended == true){ }}
+            <span class="layui-badge layui-bg-black">挂起</span>
+            {{# } else if(d.suspended == false) { }}
+            <span class="layui-badge layui-bg-green">激活</span>
+            {{# } else { }}
+            <!--    <span class="layui-badge layui-bg-blue"></span>-->
+            {{# } }}
+        </script>
+
+    </div>
+</div>
+<script th:src="@{/static/lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: BASE_WEB + 'activiti/process/page',
+            toolbar: '#tableToolbar',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [
+                [
+                    {type: 'numbers', width: 50},
+                    {type: "checkbox", width: 50},
+                    {field: 'id', title: '流程ID', width: 180},
+                    {field: 'name', title: '模型名称', width: 180, sort: true},
+                    {field: 'key', title: '模型KEY', width: 150},
+                    // {field: 'category', title: '模型分类', width: 150},
+                    {field: 'version', title: '模型版本', width: 100},
+                    {field: 'suspended', title: '状态', width: 70, align: 'center', templet: '#statusTpl'},
+                    {field: 'bpmn', title: '资源文件', templet: '#xml', sort: false, width: 200},
+                    {field: 'png', title: '流程图片', templet: '#png', sort: false, width: 200},
+                    {field: 'deploymentId', title: '部署ID', width: 120},
+                    {field: 'deploymentTime', title: '部署时间', sort: false, width: 180},
+                    {title: '操作', minWidth: 150, toolbar: '#rowToolbarTpl', align: 'center'}
+                ]
+            ],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line',
+            height: 'full-200'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var param = data.field
+            // var result = JSON.stringify(data.field);
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: param
+            }, 'data');
+
+            return false;
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(tableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(tableFilter)', function (obj) {
+            let layEvent = obj.event;
+            if(layEvent === 'suspend') {
+                layer.confirm('挂起流程流程将不能使用，确定要挂起选择的流程吗？', function(index) {
+                    //执行 Ajax 后重载
+                    $.ajax({
+                        type: "POST",
+                        url: BASE_WEB + 'activiti/process/defined/suspend/' + obj.data.deploymentId,
+                        success: function (data) {
+                            if (data.success) {
+                                layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                                    //查询
+                                    $("button[lay-filter='data-search-btn']").click();
+                                })
+                            } else {
+                                layer.msg(data.msg, {icon: 2});
+                            }
+                        }
+                    });
+
+                });
+            }else if(layEvent === 'activate') {
+                layer.confirm('确定激活选择的流程吗？', function(index) {
+                    //执行 Ajax 后重载
+                    $.ajax({
+                        type: "POST",
+                        url: BASE_WEB + 'activiti/process/defined/activate/'+ obj.data.deploymentId,
+                        success: function (data) {
+                            if (data.success) {
+                                layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                                    //查询
+                                    $("button[lay-filter='data-search-btn']").click();
+                                })
+                            } else {
+                                layer.msg(data.msg, {icon: 2});
+                            }
+                        }
+                    });
+
+                });
+            }else if(layEvent === 'delete') {
+                layer.confirm('确认删除该流程图吗', function (index) {
+                    if(index) {
+                        $.ajax({
+                            url: BASE_WEB + 'activiti/process/defined/remove/' + obj.data.deploymentId,
+                            dataType: 'json',
+                            type: 'delete',
+                            success: function (data) {
+                                if (data.success) {
+                                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                                        //查询
+                                        $("button[lay-filter='data-search-btn']").click();
+                                    })
+                                } else {
+                                    layer.msg(data.msg, {icon: 2});
+                                }
+                            }
+                        })
+                        layer.close(index);
+                    }
+                });
+            } if (layEvent === 'xml') {
+                window.xml(obj);
+            } else if (layEvent === 'png') {
+                window.png(obj);
+            }
+        });
+
+        window.png = function (obj) {
+            layer.open({
+                type: 1,
+                title: '流程图',
+                shade: 0.1,
+                area: ['900px', '550px'],
+                content: '<img src="/activiti/process/defined/image?definedId=' + obj.data.id + '&resourceName=' + obj.data.png + '">'
+            });
+        };
+
+    });
+</script>
+</body>
+</html>
