@@ -38,6 +38,7 @@
         <kaptcha.version>2.3.2</kaptcha.version>
         <hutool.version>5.3.8</hutool.version>
         <swagger2.version>2.7.0</swagger2.version>
+        <docker.image.prefix>zhua</docker.image.prefix>
     </properties>
 
     <dependencies>
@@ -293,6 +294,23 @@
                 <groupId>io.spring.javaformat</groupId>
                 <artifactId>spring-javaformat-maven-plugin</artifactId>
                 <version>0.0.24</version>
+            </plugin>
+            <!-- docker构建插件 -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
             </plugin>
         </plugins>
     </build>
