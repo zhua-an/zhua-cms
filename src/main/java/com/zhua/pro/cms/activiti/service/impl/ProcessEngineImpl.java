@@ -94,6 +94,9 @@ public class ProcessEngineImpl implements IProcessEngine {
         Authentication.setAuthenticatedUserId(startUser);
 
         ProcessDefinition processDefinition = ProcessKit.getProcessDefinition(deploymentId);
+        if(processDefinition == null) {
+            throw new ActException("该流程已被删除或不存在，请刷新页面后重新申请");
+        }
         if (processDefinition.isSuspended()) {
             throw new ActException("该流程已被挂起，无法使用，请激活后使用");
         }
@@ -276,6 +279,7 @@ public class ProcessEngineImpl implements IProcessEngine {
         currentTaskVariables.put(ProcessKit.FORM_CONFIG_KEY, flowDataT.getFormInfo());
 
         if(flowDataT.getNextNodeNum() <= 1) {
+            taskService.setAssignee(taskId, currentUser.getUsername());
             // 正式提交任务
             taskService.complete(taskId, currentTaskVariables);
 
